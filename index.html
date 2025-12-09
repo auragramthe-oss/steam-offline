@@ -1118,8 +1118,8 @@
                 <button class="form-btn" id="loginBtn">Войти</button>
                 <div class="error-message" id="loginError">Неверные данные</div>
                 <p style="text-align: center; margin-top: 15px; color: var(--text-tertiary); font-size: 0.8rem;">
-                    Тестовый админ:<br>
-                    Email: admin@steamoffline.com<br>
+                    <strong>Админ доступ:</strong><br>
+                    Email: admin@mail.ru<br>
                     Пароль: admin123
                 </p>
             </div>
@@ -1230,7 +1230,7 @@
                         </div>
                         <div class="form-group">
                             <label for="gameYear">Год выпуска *</label>
-                            <input type="number" id="gameYear" placeholder="Например: 2015" min="1980" max="2023">
+                            <input type="number" id="gameYear" placeholder="Например: 2015" min="1980" max="2024">
                         </div>
                     </div>
                     <div class="form-group">
@@ -1238,7 +1238,7 @@
                         <textarea id="gameDescription" placeholder="Краткое описание игры"></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="gameImageUrl">Ссылка на изображение *</label>
+                        <label for="gameImageUrl">Ссылка на изображение</label>
                         <input type="text" id="gameImageUrl" placeholder="https://example.com/game-image.jpg">
                         <div class="image-preview" id="imagePreview">
                             <span style="color: var(--text-tertiary);">Предпросмотр появится здесь</span>
@@ -1259,20 +1259,7 @@
                     <div class="empty-catalog" id="emptyGlobalCatalog">
                         <i class="fas fa-gamepad" style="font-size: 2.5rem; margin-bottom: 15px; color: var(--border-color);"></i>
                         <h3 style="color: var(--text-tertiary); margin-bottom: 10px;">В каталоге пока нет игр</h3>
-                        <p>Администратор может добавить игры в глобальный каталог.</p>
-                    </div>
-                </div>
-                
-                <!-- Игры пользователя -->
-                <div id="userGamesSection" style="display: none;">
-                    <h3 style="color: var(--text-color); margin-top: 40px; margin-bottom: 15px; font-size: 1.5rem;">Мои игры</h3>
-                    <div class="games-grid" id="userGamesGrid">
-                        <!-- Игры пользователя загружаются через JS -->
-                    </div>
-                    <div class="empty-catalog" id="emptyUserCatalog" style="display: none;">
-                        <i class="fas fa-gamepad" style="font-size: 2.5rem; margin-bottom: 15px; color: var(--border-color);"></i>
-                        <h3 style="color: var(--text-tertiary); margin-bottom: 10px;">У вас пока нет игр</h3>
-                        <p>Добавьте свои первые игры, нажав на кнопку "Добавить игру" выше.</p>
+                        <p>Добавьте первую игру, нажав на кнопку "Добавить игру" выше.</p>
                     </div>
                 </div>
             </section>
@@ -1365,7 +1352,7 @@
                     </div>
                     <div class="form-group">
                         <label for="adminGameYear">Год выпуска *</label>
-                        <input type="number" id="adminGameYear" placeholder="Например: 2015" min="1980" max="2023">
+                        <input type="number" id="adminGameYear" placeholder="Например: 2015" min="1980" max="2024">
                     </div>
                 </div>
                 <div class="form-group">
@@ -1373,7 +1360,7 @@
                     <textarea id="adminGameDescription" placeholder="Краткое описание игры"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="adminGameImageUrl">Ссылка на изображение *</label>
+                    <label for="adminGameImageUrl">Ссылка на изображение</label>
                     <input type="text" id="adminGameImageUrl" placeholder="https://example.com/game-image.jpg">
                     <div class="image-preview" id="adminImagePreview">
                         <span style="color: var(--text-tertiary);">Предпросмотр появится здесь</span>
@@ -1432,16 +1419,14 @@
 
     <script>
         // =================== КОНФИГУРАЦИЯ SUPABASE ===================
-        // Ваши реальные данные Supabase
         const SUPABASE_URL = 'https://fxukofvsfwzbnibawweg.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4dWtvZnZzZnd6Ym5pYmF3d2VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyMDkwOTcsImV4cCI6MjA4MDc4NTA5N30.ErgHvEx4Dof53o2g40A7i-KdLOXzWnjpt0NjR7ohYuo';
         
-        // Проверяем наличие кириллицы в конфигурации
-        console.log('Проверка конфигурации Supabase:');
-        console.log('URL:', SUPABASE_URL);
-        console.log('Anon Key первые 10 символов:', SUPABASE_ANON_KEY.substring(0, 10) + '...');
+        // АДМИН КРЕДЕНЦИАЛЫ (встроены в код)
+        const ADMIN_EMAIL = 'admin@mail.ru';
+        const ADMIN_PASSWORD = 'admin123';
         
-        // Инициализация Supabase с обработкой ошибок
+        // Инициализация Supabase
         let supabase;
         try {
             supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
@@ -1453,7 +1438,6 @@
             console.log('Supabase успешно инициализирован');
         } catch (error) {
             console.error('Ошибка инициализации Supabase:', error);
-            // Создаем заглушку для отладки
             supabase = {
                 auth: {
                     getSession: async () => ({ data: { session: null } }),
@@ -1479,7 +1463,6 @@
         // =================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ===================
         let currentUser = null;
         let isAdmin = false;
-        let onlineUsers = new Set();
         
         // =================== DOM ЭЛЕМЕНТЫ ===================
         const authModal = document.getElementById('authModal');
@@ -1503,10 +1486,7 @@
         const cancelGameBtn = document.getElementById('cancelGameBtn');
         const editingGameId = document.getElementById('editingGameId');
         const globalGamesGrid = document.getElementById('globalGamesGrid');
-        const userGamesSection = document.getElementById('userGamesSection');
-        const userGamesGrid = document.getElementById('userGamesGrid');
         const emptyGlobalCatalog = document.getElementById('emptyGlobalCatalog');
-        const emptyUserCatalog = document.getElementById('emptyUserCatalog');
         const notification = document.getElementById('notification');
         const imagePreview = document.getElementById('imagePreview');
         const gameImageUrlInput = document.getElementById('gameImageUrl');
@@ -1557,18 +1537,16 @@
             // Проверяем авторизацию
             await checkAuth();
             
-            // Загружаем игры
-            await loadGlobalGames();
-            await loadUserGames();
+            // Загружаем игры (все игры теперь глобальные)
+            await loadGames();
             
             // Обновляем онлайн статус
-            await updateOnlineStatus();
+            updateOnlineStatus();
             
             // Слушаем изменения авторизации
             supabase.auth.onAuthStateChange(async (event, session) => {
                 if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
                     await checkAuth();
-                    await updateOnlineStatus();
                 }
             });
             
@@ -1587,9 +1565,6 @@
             
             // Обновляем онлайн статус каждые 30 секунд
             setInterval(updateOnlineStatus, 30000);
-            
-            // Загружаем чат поддержки
-            await loadSupportChat();
         });
         
         // =================== ФУНКЦИИ АУТЕНТИФИКАЦИИ ===================
@@ -1598,48 +1573,29 @@
             
             if (session) {
                 currentUser = session.user;
+                const userEmail = currentUser.email;
                 
-                // Получаем информацию о пользователе
-                const { data: userData } = await supabase
-                    .from('users')
-                    .select('*')
-                    .eq('email', currentUser.email)
-                    .single();
+                // Проверяем, админ ли это (по email в коде)
+                isAdmin = (userEmail === ADMIN_EMAIL);
                 
-                if (userData) {
-                    isAdmin = userData.is_admin || false;
-                    
-                    // Обновляем интерфейс
-                    openAuthModalBtn.style.display = 'none';
-                    authButtonLi.style.display = 'none';
-                    userInfo.style.display = 'flex';
-                    usernameDisplay.textContent = userData.username || currentUser.email.split('@')[0];
-                    userAvatar.textContent = (userData.username || currentUser.email[0]).toUpperCase();
-                    
-                    if (isAdmin) {
-                        adminNavItem.style.display = 'block';
-                        showAddGameFormBtn.style.display = 'none';
-                        userGamesSection.style.display = 'none';
-                    } else {
-                        adminNavItem.style.display = 'none';
-                        showAddGameFormBtn.style.display = 'block';
-                        userGamesSection.style.display = 'block';
-                    }
+                // Обновляем интерфейс
+                openAuthModalBtn.style.display = 'none';
+                authButtonLi.style.display = 'none';
+                userInfo.style.display = 'flex';
+                usernameDisplay.textContent = userEmail.split('@')[0];
+                userAvatar.textContent = userEmail[0].toUpperCase();
+                
+                // Показываем кнопку добавления игры для всех авторизованных
+                showAddGameFormBtn.style.display = 'block';
+                
+                // Показываем админ-панель только для админа
+                if (isAdmin) {
+                    adminNavItem.style.display = 'block';
                 } else {
-                    // Создаем запись пользователя, если её нет
-                    const { error } = await supabase
-                        .from('users')
-                        .insert({
-                            id: currentUser.id,
-                            email: currentUser.email,
-                            username: currentUser.email.split('@')[0],
-                            is_admin: false
-                        });
-                    
-                    if (error) {
-                        console.error('Ошибка создания пользователя:', error);
-                    }
+                    adminNavItem.style.display = 'none';
                 }
+                
+                console.log('Пользователь:', userEmail, 'Админ:', isAdmin);
             } else {
                 // Не авторизован
                 currentUser = null;
@@ -1649,17 +1605,15 @@
                 userInfo.style.display = 'none';
                 adminNavItem.style.display = 'none';
                 showAddGameFormBtn.style.display = 'none';
-                userGamesSection.style.display = 'none';
             }
         }
         
         // =================== ФУНКЦИИ ДЛЯ ИГР ===================
-        async function loadGlobalGames() {
+        async function loadGames() {
             try {
                 const { data: games, error } = await supabase
                     .from('games')
                     .select('*')
-                    .eq('is_global', true)
                     .order('created_at', { ascending: false });
                 
                 if (error) {
@@ -1677,52 +1631,17 @@
                     emptyGlobalCatalog.style.display = 'none';
                     
                     games.forEach(game => {
-                        const gameCard = createGameCard(game, false, true);
+                        const gameCard = createGameCard(game);
                         globalGamesGrid.appendChild(gameCard);
                     });
                 }
             } catch (error) {
-                console.error('Ошибка в loadGlobalGames:', error);
+                console.error('Ошибка в loadGames:', error);
                 showNotification('Ошибка загрузки игр', 'error');
             }
         }
         
-        async function loadUserGames() {
-            if (!currentUser) return;
-            
-            try {
-                const { data: games, error } = await supabase
-                    .from('games')
-                    .select('*')
-                    .eq('added_by', currentUser.id)
-                    .eq('is_global', false)
-                    .order('created_at', { ascending: false });
-                
-                if (error) {
-                    console.error('Ошибка загрузки пользовательских игр:', error);
-                    return;
-                }
-                
-                userGamesGrid.innerHTML = '';
-                
-                if (!games || games.length === 0) {
-                    userGamesGrid.style.display = 'none';
-                    emptyUserCatalog.style.display = 'block';
-                } else {
-                    userGamesGrid.style.display = 'grid';
-                    emptyUserCatalog.style.display = 'none';
-                    
-                    games.forEach(game => {
-                        const gameCard = createGameCard(game, true, false);
-                        userGamesGrid.appendChild(gameCard);
-                    });
-                }
-            } catch (error) {
-                console.error('Ошибка в loadUserGames:', error);
-            }
-        }
-        
-        function createGameCard(game, isUserGame, isGlobal) {
+        function createGameCard(game) {
             const gameCard = document.createElement('div');
             gameCard.className = 'game-card';
             gameCard.dataset.id = game.id;
@@ -1731,18 +1650,12 @@
             
             let actionsHTML = '';
             
-            if (isUserGame) {
+            // Показываем кнопки редактирования/удаления только админу
+            if (isAdmin) {
                 actionsHTML = `
                     <div class="game-actions">
-                        <button class="game-action-btn edit-game-btn" data-action="edit-user" data-game-id="${game.id}">Редактировать</button>
-                        <button class="game-action-btn delete-game-btn" data-action="delete-user" data-game-id="${game.id}">Удалить</button>
-                    </div>
-                `;
-            } else if (isGlobal && isAdmin) {
-                actionsHTML = `
-                    <div class="game-actions">
-                        <button class="game-action-btn edit-game-btn" data-action="edit-global" data-game-id="${game.id}">Редактировать</button>
-                        <button class="game-action-btn delete-game-btn" data-action="delete-global" data-game-id="${game.id}">Удалить</button>
+                        <button class="game-action-btn edit-game-btn" data-game-id="${game.id}">Редактировать</button>
+                        <button class="game-action-btn delete-game-btn" data-game-id="${game.id}">Удалить</button>
                     </div>
                 `;
             }
@@ -1757,79 +1670,27 @@
                 </div>
             `;
             
-            // Добавляем обработчики
-            setTimeout(() => {
-                const editBtn = gameCard.querySelector('[data-action="edit-user"]');
-                const deleteBtn = gameCard.querySelector('[data-action="delete-user"]');
-                const editGlobalBtn = gameCard.querySelector('[data-action="edit-global"]');
-                const deleteGlobalBtn = gameCard.querySelector('[data-action="delete-global"]');
-                
-                if (editBtn) {
-                    editBtn.addEventListener('click', () => handleEditUserGame(game.id));
-                }
-                
-                if (deleteBtn) {
-                    deleteBtn.addEventListener('click', () => handleDeleteUserGame(game.id));
-                }
-                
-                if (editGlobalBtn) {
-                    editGlobalBtn.addEventListener('click', () => handleEditGlobalGame(game.id));
-                }
-                
-                if (deleteGlobalBtn) {
-                    deleteGlobalBtn.addEventListener('click', () => handleDeleteGlobalGame(game.id));
-                }
-            }, 0);
+            // Добавляем обработчики для админских кнопок
+            if (isAdmin) {
+                setTimeout(() => {
+                    const editBtn = gameCard.querySelector('.edit-game-btn');
+                    const deleteBtn = gameCard.querySelector('.delete-game-btn');
+                    
+                    if (editBtn) {
+                        editBtn.addEventListener('click', () => handleEditGame(game.id));
+                    }
+                    
+                    if (deleteBtn) {
+                        deleteBtn.addEventListener('click', () => handleDeleteGame(game.id));
+                    }
+                }, 0);
+            }
             
             return gameCard;
         }
         
-        async function handleDeleteUserGame(gameId) {
-            if (!currentUser || !confirm('Удалить игру из коллекции?')) return;
-            
-            const { error } = await supabase
-                .from('games')
-                .delete()
-                .eq('id', gameId)
-                .eq('added_by', currentUser.id);
-            
-            if (error) {
-                showNotification('Ошибка удаления игры', 'error');
-            } else {
-                showNotification('Игра удалена', 'success');
-                await loadUserGames();
-            }
-        }
-        
-        async function handleEditUserGame(gameId) {
-            if (!currentUser) return;
-            
-            const { data: game, error } = await supabase
-                .from('games')
-                .select('*')
-                .eq('id', gameId)
-                .eq('added_by', currentUser.id)
-                .single();
-            
-            if (error || !game) {
-                showNotification('Игра не найдена', 'error');
-                return;
-            }
-            
-            document.getElementById('gameTitle').value = game.title;
-            document.getElementById('gameYear').value = game.year;
-            document.getElementById('gameDescription').value = game.description;
-            document.getElementById('gameImageUrl').value = game.image_url;
-            editingGameId.value = gameId;
-            
-            updateImagePreview();
-            gameFormSection.style.display = 'block';
-            gameFormTitle.textContent = 'Редактировать игру';
-            gameFormSection.scrollIntoView({ behavior: 'smooth' });
-        }
-        
-        async function handleDeleteGlobalGame(gameId) {
-            if (!isAdmin || !confirm('Удалить глобальную игру?')) return;
+        async function handleDeleteGame(gameId) {
+            if (!isAdmin || !confirm('Удалить игру?')) return;
             
             const { error } = await supabase
                 .from('games')
@@ -1840,12 +1701,14 @@
                 showNotification('Ошибка удаления игры', 'error');
             } else {
                 showNotification('Игра удалена', 'success');
-                await loadGlobalGames();
-                await loadAdminGames();
+                await loadGames();
+                if (adminPanel.style.display === 'block') {
+                    await loadAdminGames();
+                }
             }
         }
         
-        async function handleEditGlobalGame(gameId) {
+        async function handleEditGame(gameId) {
             if (!isAdmin) return;
             
             const { data: game, error } = await supabase
@@ -1859,15 +1722,30 @@
                 return;
             }
             
-            document.getElementById('adminGameTitle').value = game.title;
-            document.getElementById('adminGameYear').value = game.year;
-            document.getElementById('adminGameDescription').value = game.description;
-            document.getElementById('adminGameImageUrl').value = game.image_url;
-            adminEditingGameId.value = gameId;
-            
-            updateAdminImagePreview();
-            adminGameFormSection.style.display = 'block';
-            adminGameFormTitle.textContent = 'Редактировать игру (админ)';
+            if (adminPanel.style.display === 'block') {
+                // Редактирование в админ-панели
+                document.getElementById('adminGameTitle').value = game.title;
+                document.getElementById('adminGameYear').value = game.year;
+                document.getElementById('adminGameDescription').value = game.description;
+                document.getElementById('adminGameImageUrl').value = game.image_url || '';
+                adminEditingGameId.value = gameId;
+                
+                updateAdminImagePreview();
+                adminGameFormSection.style.display = 'block';
+                adminGameFormTitle.textContent = 'Редактировать игру';
+            } else {
+                // Редактирование в основном интерфейсе
+                document.getElementById('gameTitle').value = game.title;
+                document.getElementById('gameYear').value = game.year;
+                document.getElementById('gameDescription').value = game.description;
+                document.getElementById('gameImageUrl').value = game.image_url || '';
+                editingGameId.value = gameId;
+                
+                updateImagePreview();
+                gameFormSection.style.display = 'block';
+                gameFormTitle.textContent = 'Редактировать игру';
+                gameFormSection.scrollIntoView({ behavior: 'smooth' });
+            }
         }
         
         // =================== ФУНКЦИИ АДМИН-ПАНЕЛИ ===================
@@ -1877,7 +1755,6 @@
             const { data: games, error } = await supabase
                 .from('games')
                 .select('*')
-                .eq('is_global', true)
                 .order('created_at', { ascending: false });
             
             if (error) {
@@ -1889,7 +1766,7 @@
             adminGamesList.innerHTML = '';
             
             if (!games || games.length === 0) {
-                adminGamesList.innerHTML = '<p style="text-align: center; color: var(--text-tertiary);">Глобальных игр пока нет.</p>';
+                adminGamesList.innerHTML = '<p style="text-align: center; color: var(--text-tertiary);">Игр пока нет.</p>';
                 return;
             }
             
@@ -1897,7 +1774,7 @@
             gamesList.className = 'games-grid';
             
             games.forEach(game => {
-                const gameCard = createGameCard(game, false, true);
+                const gameCard = createGameCard(game);
                 gamesList.appendChild(gameCard);
             });
             
@@ -1965,7 +1842,6 @@
         async function loadSupportChat() {
             if (!currentUser) return;
             
-            // Загружаем историю обращений пользователя
             const { data: tickets, error } = await supabase
                 .from('support_tickets')
                 .select('*')
@@ -1981,13 +1857,11 @@
             
             if (tickets && tickets.length > 0) {
                 tickets.forEach(ticket => {
-                    // Сообщение пользователя
                     const userMsg = document.createElement('div');
                     userMsg.className = 'message user-message';
                     userMsg.textContent = ticket.message;
                     chatBody.appendChild(userMsg);
                     
-                    // Ответ админа (если есть)
                     if (ticket.admin_reply) {
                         const adminMsg = document.createElement('div');
                         adminMsg.className = 'message admin-message';
@@ -1997,7 +1871,6 @@
                 });
             }
             
-            // Прокручиваем вниз
             chatBody.scrollTop = chatBody.scrollHeight;
         }
         
@@ -2016,18 +1889,14 @@
                 console.error('Ошибка отправки сообщения:', error);
                 showNotification('Ошибка отправки сообщения', 'error');
             } else {
-                // Добавляем сообщение в чат
                 const userMsg = document.createElement('div');
                 userMsg.className = 'message user-message';
                 userMsg.textContent = message;
                 chatBody.appendChild(userMsg);
                 
-                // Прокручиваем вниз
                 chatBody.scrollTop = chatBody.scrollHeight;
-                
                 showNotification('Сообщение отправлено в поддержку', 'success');
                 
-                // Если админ онлайн - уведомляем
                 if (isAdmin) {
                     loadSupportTickets();
                 }
@@ -2100,9 +1969,8 @@
             }, 5000);
         }
         
-        async function updateOnlineStatus() {
-            // Простая реализация онлайн-статуса
-            const count = Math.floor(Math.random() * 50) + 10; // Заглушка
+        function updateOnlineStatus() {
+            const count = Math.floor(Math.random() * 50) + 10;
             onlineCount.textContent = count;
             footerOnlineCount.textContent = count;
         }
@@ -2227,7 +2095,7 @@
                 console.error('Ошибка создания пользователя в базе:', dbError);
             }
             
-            document.getElementById('registerSuccess').textContent = 'Регистрация успешна! Проверьте email для подтверждения.';
+            document.getElementById('registerSuccess').textContent = 'Регистрация успешна!';
             document.getElementById('registerSuccess').style.display = 'block';
             document.getElementById('registerError').style.display = 'none';
             
@@ -2290,13 +2158,14 @@
                 return;
             }
             
+            // Все игры теперь глобальные (is_global = true)
             const gameData = {
                 title,
                 year: yearNum,
                 description,
                 image_url: imageUrl || null,
                 added_by: currentUser.id,
-                is_global: false,
+                is_global: true, // ВСЕ ИГРЫ ГЛОБАЛЬНЫЕ
                 updated_at: new Date()
             };
             
@@ -2307,8 +2176,7 @@
                 const { error: updateError } = await supabase
                     .from('games')
                     .update(gameData)
-                    .eq('id', gameId)
-                    .eq('added_by', currentUser.id);
+                    .eq('id', gameId);
                 error = updateError;
             } else {
                 // Создание
@@ -2324,7 +2192,10 @@
             } else {
                 showNotification(`Игра "${title}" сохранена`, 'success');
                 gameFormSection.style.display = 'none';
-                await loadUserGames();
+                await loadGames();
+                if (adminPanel.style.display === 'block') {
+                    await loadAdminGames();
+                }
             }
         });
         
@@ -2333,7 +2204,7 @@
             if (!isAdmin) return;
             
             adminGameFormSection.style.display = 'block';
-            adminGameFormTitle.textContent = 'Добавить новую игру (админ)';
+            adminGameFormTitle.textContent = 'Добавить новую игру';
             adminEditingGameId.value = '';
             document.getElementById('adminGameTitle').value = '';
             document.getElementById('adminGameYear').value = '';
@@ -2402,9 +2273,9 @@
             if (error) {
                 showNotification('Ошибка сохранения игры', 'error');
             } else {
-                showNotification(`Игра "${title}" сохранена в глобальный каталог`, 'success');
+                showNotification(`Игра "${title}" сохранена`, 'success');
                 adminGameFormSection.style.display = 'none';
-                await loadGlobalGames();
+                await loadGames();
                 await loadAdminGames();
             }
         });
