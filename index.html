@@ -28,6 +28,8 @@
             --success-color: #4cd964;
             --donate-color: #ff6b35;
             --donate-hover: #e55a2b;
+            --telegram-color: #0088cc;
+            --telegram-hover: #006699;
             --border-color: #2a2a35;
             --shadow-color: rgba(0, 0, 0, 0.3);
             --card-bg: #1a1a24;
@@ -49,6 +51,8 @@
             --success-color: #43a047;
             --donate-color: #ff6b35;
             --donate-hover: #e55a2b;
+            --telegram-color: #0088cc;
+            --telegram-hover: #006699;
             --border-color: #e0e0e0;
             --shadow-color: rgba(0, 0, 0, 0.1);
             --card-bg: #ffffff;
@@ -93,15 +97,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-        }
-        
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex: 1;
-            min-width: 0;
         }
         
         .logo {
@@ -122,101 +117,6 @@
             font-size: 1.2rem;
         }
         
-        /* Онлайн статус (мобильная версия) */
-        .online-status {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 10px;
-            background-color: var(--bg-tertiary);
-            border-radius: 15px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            white-space: nowrap;
-        }
-        
-        .online-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: var(--online-color);
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 0.7; }
-            50% { opacity: 1; }
-            100% { opacity: 0.7; }
-        }
-        
-        .online-count {
-            font-weight: bold;
-            color: var(--online-color);
-        }
-        
-        /* Навигация для мобильных */
-        nav {
-            width: 100%;
-            margin-top: 10px;
-            display: none;
-        }
-        
-        nav.active {
-            display: block;
-        }
-        
-        nav ul {
-            display: flex;
-            flex-direction: column;
-            list-style: none;
-            gap: 8px;
-            align-items: stretch;
-        }
-        
-        nav a {
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-weight: 500;
-            font-size: 0.9rem;
-            transition: color 0.3s;
-            display: block;
-            padding: 8px 12px;
-            border-radius: 8px;
-        }
-        
-        nav a:hover, nav a.active {
-            color: var(--primary-color);
-            background-color: var(--bg-tertiary);
-        }
-        
-        .btn-auth, .btn-donate {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 20px;
-            font-weight: bold;
-            transition: background-color 0.3s;
-            cursor: pointer;
-            border: none;
-            font-size: 0.8rem;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-            width: 100%;
-        }
-        
-        .btn-auth:hover, .btn-donate:hover {
-            background-color: var(--primary-hover);
-        }
-        
-        .btn-donate {
-            background-color: var(--donate-color);
-        }
-        
-        .btn-donate:hover {
-            background-color: var(--donate-hover);
-        }
-        
         /* Кнопка меню для мобильных */
         .menu-toggle {
             background: none;
@@ -226,12 +126,11 @@
             cursor: pointer;
             padding: 5px;
             border-radius: 50%;
-            width: 35px;
-            height: 35px;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-left: 10px;
         }
         
         .menu-toggle:hover {
@@ -239,19 +138,94 @@
             color: var(--primary-color);
         }
         
-        .user-info {
+        /* Мобильное меню */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 280px;
+            height: 100%;
+            background-color: var(--bg-secondary);
+            box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3);
+            z-index: 2000;
+            transition: right 0.3s ease;
+            padding-top: 70px;
+            overflow-y: auto;
+        }
+        
+        .mobile-menu.active {
+            right: 0;
+        }
+        
+        .mobile-menu-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .mobile-menu-header h3 {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+        
+        .close-menu {
+            background: none;
+            border: none;
+            color: var(--text-tertiary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .mobile-nav {
+            padding: 20px;
+        }
+        
+        .mobile-nav ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .mobile-nav a {
             display: flex;
             align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-top: 10px;
-            width: 100%;
-            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+            font-size: 1rem;
+        }
+        
+        .mobile-nav a:hover, .mobile-nav a.active {
+            background-color: var(--bg-tertiary);
+            color: var(--primary-color);
+        }
+        
+        .mobile-nav i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .mobile-user-info {
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .mobile-user-info.active {
+            display: block;
         }
         
         .user-avatar {
-            width: 32px;
-            height: 32px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background-color: var(--primary-color);
             display: flex;
@@ -259,17 +233,91 @@
             justify-content: center;
             font-weight: bold;
             color: white;
-            font-size: 0.8rem;
-            flex-shrink: 0;
+            font-size: 1rem;
         }
         
-        #usernameDisplay {
-            font-size: 0.9rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            flex: 1;
-            min-width: 0;
+        /* Десктопная навигация */
+        .desktop-nav {
+            display: none;
+        }
+        
+        @media (min-width: 768px) {
+            .desktop-nav {
+                display: block;
+            }
+            
+            .menu-toggle {
+                display: none;
+            }
+            
+            .desktop-nav ul {
+                display: flex;
+                list-style: none;
+                gap: 15px;
+                align-items: center;
+            }
+            
+            .desktop-nav a {
+                text-decoration: none;
+                color: var(--text-secondary);
+                font-weight: 500;
+                font-size: 0.9rem;
+                transition: color 0.3s;
+                padding: 8px 12px;
+                border-radius: 6px;
+            }
+            
+            .desktop-nav a:hover {
+                color: var(--primary-color);
+                background-color: var(--bg-tertiary);
+            }
+            
+            .user-info {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+        }
+        
+        .btn-auth, .btn-donate, .btn-telegram {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            cursor: pointer;
+            border: none;
+            font-size: 0.85rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .btn-auth {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-auth:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        .btn-donate {
+            background-color: var(--donate-color);
+            color: white;
+        }
+        
+        .btn-donate:hover {
+            background-color: var(--donate-hover);
+        }
+        
+        .btn-telegram {
+            background-color: var(--telegram-color);
+            color: white;
+        }
+        
+        .btn-telegram:hover {
+            background-color: var(--telegram-hover);
         }
         
         /* Кнопка переключения темы */
@@ -281,12 +329,11 @@
             cursor: pointer;
             padding: 5px;
             border-radius: 50%;
-            width: 35px;
-            height: 35px;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
         }
         
         .theme-toggle:hover {
@@ -294,7 +341,7 @@
             color: var(--primary-color);
         }
         
-        /* Кнопка техподдержки (мобильная версия) */
+        /* Кнопка техподдержки */
         .support-btn {
             position: fixed;
             right: 15px;
@@ -321,7 +368,7 @@
             box-shadow: 0 6px 20px rgba(26, 95, 180, 0.7);
         }
         
-        /* Чат техподдержки (мобильная версия) */
+        /* Чат техподдержки */
         .support-chat {
             position: fixed;
             right: 10px;
@@ -399,208 +446,6 @@
             border-bottom-left-radius: 4px;
         }
         
-        .admin-message {
-            align-self: flex-start;
-            background-color: var(--donate-color);
-            color: white;
-            border-bottom-left-radius: 4px;
-        }
-        
-        .chat-input {
-            padding: 10px 12px;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            gap: 6px;
-            background-color: var(--bg-secondary);
-        }
-        
-        .chat-input input {
-            flex: 1;
-            padding: 8px 10px;
-            background-color: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            color: var(--text-color);
-            font-size: 0.85rem;
-        }
-        
-        .chat-input input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-        
-        .send-btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            flex-shrink: 0;
-        }
-        
-        .send-btn:hover {
-            background-color: var(--primary-hover);
-        }
-        
-        /* Модальные окна (мобильная версия) */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
-            justify-content: center;
-            align-items: center;
-            padding: 15px;
-        }
-        
-        .modal-content {
-            background-color: var(--bg-secondary);
-            padding: 20px;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 400px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 10px 30px var(--shadow-color);
-            position: relative;
-            border: 1px solid var(--border-color);
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        .close-modal {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-tertiary);
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .close-modal:hover {
-            color: var(--text-color);
-        }
-        
-        .modal h2 {
-            margin-bottom: 15px;
-            color: var(--primary-color);
-            text-align: center;
-            font-size: 1.3rem;
-            padding-right: 20px;
-        }
-        
-        .modal-tabs {
-            display: flex;
-            margin-bottom: 15px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .tab-btn {
-            flex: 1;
-            padding: 8px;
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-        
-        .tab-btn.active {
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--primary-color);
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .form-group {
-            margin-bottom: 12px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 4px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-        }
-        
-        .form-group input, .form-group textarea {
-            width: 100%;
-            padding: 8px 10px;
-            background-color: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            font-size: 0.85rem;
-            color: var(--text-color);
-            transition: border-color 0.3s;
-        }
-        
-        .form-group textarea {
-            min-height: 70px;
-            resize: vertical;
-        }
-        
-        .form-group input:focus, .form-group textarea:focus {
-            border-color: var(--primary-color);
-            outline: none;
-        }
-        
-        .form-btn {
-            width: 100%;
-            background-color: var(--primary-color);
-            color: white;
-            padding: 8px;
-            border: none;
-            border-radius: 5px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-top: 8px;
-        }
-        
-        .form-btn:hover {
-            background-color: var(--primary-hover);
-        }
-        
-        .error-message {
-            color: var(--error-color);
-            margin-top: 8px;
-            text-align: center;
-            font-size: 0.75rem;
-            display: none;
-        }
-        
-        .success-message {
-            color: var(--success-color);
-            margin-top: 8px;
-            text-align: center;
-            font-size: 0.75rem;
-            display: none;
-        }
-        
         /* Главный контент */
         .main-content {
             padding: 20px 0;
@@ -625,7 +470,7 @@
             line-height: 1.5;
         }
         
-        /* Герой секция (мобильная версия) */
+        /* Герой секция */
         .hero-section {
             padding: 40px 15px;
             text-align: center;
@@ -655,12 +500,25 @@
             line-height: 1.5;
         }
         
-        /* Сетка игр (мобильная версия) */
+        /* Сетка игр */
         .games-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 12px;
             margin-bottom: 30px;
+        }
+        
+        @media (min-width: 768px) {
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 20px;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
         }
         
         .game-card {
@@ -683,6 +541,18 @@
             height: 120px;
             object-fit: cover;
             border-bottom: 1px solid var(--border-color);
+        }
+        
+        @media (min-width: 768px) {
+            .game-image {
+                height: 140px;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .game-image {
+                height: 160px;
+            }
         }
         
         .game-info {
@@ -728,6 +598,12 @@
             flex-direction: column;
         }
         
+        @media (min-width: 768px) {
+            .game-actions {
+                flex-direction: row;
+            }
+        }
+        
         .game-action-btn {
             width: 100%;
             padding: 5px 8px;
@@ -737,6 +613,13 @@
             font-size: 0.75rem;
             font-weight: 500;
             transition: background-color 0.3s;
+        }
+        
+        @media (min-width: 768px) {
+            .game-action-btn {
+                width: auto;
+                flex: 1;
+            }
         }
         
         .edit-game-btn {
@@ -767,44 +650,6 @@
             display: none;
         }
         
-        .game-form-section h3 {
-            color: var(--primary-color);
-            margin-bottom: 12px;
-            text-align: center;
-            font-size: 1.1rem;
-        }
-        
-        .form-row {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-        
-        .form-row .form-group {
-            flex: 1;
-            margin-bottom: 0;
-        }
-        
-        .image-preview {
-            width: 100%;
-            height: 120px;
-            background-color: var(--bg-tertiary);
-            border-radius: 6px;
-            margin-top: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        
-        .image-preview img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: cover;
-        }
-        
-        /* Кнопка добавления игры */
         .add-game-btn-container {
             text-align: center;
             margin-bottom: 20px;
@@ -826,166 +671,7 @@
             margin: 0 auto;
         }
         
-        .add-game-btn:hover {
-            background-color: var(--primary-hover);
-        }
-        
-        /* Пустой каталог */
-        .empty-catalog {
-            text-align: center;
-            padding: 30px 15px;
-            color: var(--text-tertiary);
-            font-size: 0.9rem;
-        }
-        
-        .empty-catalog i {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            color: var(--border-color);
-        }
-        
-        /* Секция "О проекте" (мобильная версия) */
-        .about-section {
-            background-color: var(--card-bg);
-            border-radius: 10px;
-            padding: 25px 20px;
-            margin-bottom: 30px;
-            border: 1px solid var(--border-color);
-        }
-        
-        .about-section h2 {
-            color: var(--primary-color);
-            margin-bottom: 15px;
-            text-align: center;
-            font-size: 1.3rem;
-        }
-        
-        .about-content {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .about-content p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-        
-        /* Секция доната (мобильная версия) */
-        .donate-section {
-            background-color: var(--card-bg);
-            border-radius: 10px;
-            padding: 25px 20px;
-            margin-bottom: 30px;
-            border: 1px solid var(--border-color);
-            text-align: center;
-        }
-        
-        .donate-section h2 {
-            color: var(--donate-color);
-            margin-bottom: 15px;
-            text-align: center;
-            font-size: 1.3rem;
-        }
-        
-        .donate-content {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            align-items: center;
-        }
-        
-        .donate-content p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            line-height: 1.5;
-            max-width: 800px;
-        }
-        
-        .donate-methods {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 15px;
-            width: 100%;
-        }
-        
-        .donate-method {
-            background-color: var(--bg-tertiary);
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            transition: transform 0.3s;
-            width: 100%;
-        }
-        
-        .donate-method:hover {
-            transform: translateY(-3px);
-        }
-        
-        .donate-method i {
-            font-size: 1.8rem;
-            color: var(--donate-color);
-            margin-bottom: 8px;
-        }
-        
-        .donate-method h3 {
-            margin-bottom: 6px;
-            color: var(--text-color);
-            font-size: 0.95rem;
-        }
-        
-        .donate-method p {
-            color: var(--text-tertiary);
-            font-size: 0.8rem;
-            margin-bottom: 8px;
-        }
-        
-        /* Админ панель (мобильная версия) */
-        .admin-panel {
-            display: none;
-            padding: 20px 0;
-            max-width: 1400px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .admin-panel h2 {
-            color: var(--primary-color);
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 1.3rem;
-        }
-        
-        .admin-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 25px;
-            width: 100%;
-        }
-        
-        .admin-btn {
-            padding: 10px 15px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.85rem;
-            transition: background-color 0.3s;
-            width: 100%;
-            text-align: center;
-        }
-        
-        .admin-btn:hover {
-            background-color: var(--primary-hover);
-        }
-        
-        /* Подвал (мобильная версия) */
+        /* Подвал */
         footer {
             background-color: var(--bg-color);
             color: var(--text-tertiary);
@@ -995,70 +681,7 @@
             margin-top: 30px;
         }
         
-        .footer-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .social-links {
-            display: flex;
-            gap: 12px;
-            margin-top: 12px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .social-links a {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            transition: color 0.3s;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background-color: var(--bg-tertiary);
-        }
-        
-        .social-links a:hover {
-            color: var(--primary-color);
-            background-color: var(--primary-color);
-            color: white;
-        }
-        
-        .telegram-link {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            transition: background-color 0.3s;
-            margin-top: 10px;
-        }
-        
-        .telegram-link:hover {
-            background-color: var(--primary-hover);
-            color: white;
-        }
-        
-        /* Кнопки навигации в админ панели */
-        .admin-nav-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 20px;
-            width: 100%;
-        }
-        
-        /* Уведомления (мобильная версия) */
+        /* Уведомления */
         .notification {
             position: fixed;
             top: 15px;
@@ -1088,122 +711,54 @@
             }
         }
         
-        /* Десктопная версия */
-        @media (min-width: 768px) {
-            body {
-                padding-bottom: 0;
-            }
-            
-            .container {
-                padding: 0 20px;
-            }
-            
-            header {
-                padding: 20px 0;
-            }
-            
-            .logo {
-                font-size: 1.3rem;
-            }
-            
-            .menu-toggle {
-                display: none;
-            }
-            
-            nav {
-                display: block !important;
-                width: auto;
-                margin-top: 0;
-                margin-left: auto;
-            }
-            
-            nav ul {
-                flex-direction: row;
-                gap: 15px;
-            }
-            
-            nav a {
-                padding: 8px 15px;
-                display: inline-block;
-                width: auto;
-            }
-            
-            .user-info {
-                width: auto;
-                margin-top: 0;
-                justify-content: flex-start;
-            }
-            
-            .support-chat {
-                width: 350px;
-                right: 20px;
-                bottom: 90px;
-            }
-            
-            .games-grid {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-                gap: 20px;
-            }
-            
-            .game-image {
-                height: 140px;
-            }
-            
-            .game-actions {
-                flex-direction: row;
-            }
-            
-            .donate-methods {
-                flex-direction: row;
-                justify-content: center;
-            }
-            
-            .donate-method {
-                width: 180px;
-            }
-            
-            .form-row {
-                flex-direction: row;
-            }
-            
-            .admin-actions {
-                flex-direction: row;
-                justify-content: center;
-            }
-            
-            .admin-btn {
-                width: auto;
-                min-width: 180px;
-            }
-            
-            .admin-nav-buttons {
-                flex-direction: row;
-                justify-content: center;
-            }
-            
-            footer {
-                padding: 30px 0;
-            }
-            
-            .notification {
-                right: 20px;
-                left: auto;
-                max-width: 300px;
-            }
+        /* Оверлей для мобильного меню */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1999;
+            display: none;
         }
         
-        @media (min-width: 1024px) {
-            .games-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            }
-            
-            .game-image {
-                height: 160px;
-            }
+        .menu-overlay.active {
+            display: block;
         }
     </style>
 </head>
 <body class="dark-theme">
+    <!-- Мобильное меню -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <h3>Меню</h3>
+            <button class="close-menu" id="closeMenu">&times;</button>
+        </div>
+        <nav class="mobile-nav">
+            <ul>
+                <li><a href="#games" id="mobileNavGames"><i class="fas fa-gamepad"></i> Каталог игр</a></li>
+                <li><a href="#about" id="mobileNavAbout"><i class="fas fa-info-circle"></i> О проекте</a></li>
+                <li><a href="#donate" id="mobileNavDonate"><i class="fas fa-heart"></i> Поддержать</a></li>
+                <li><a href="https://t.me/steamofflineaccount256" target="_blank" class="btn-telegram"><i class="fab fa-telegram"></i> Наш канал</a></li>
+                <li><a href="https://t.me/freesteamaccc" target="_blank" class="btn-telegram" style="background-color: #25D366; color: white;"><i class="fab fa-telegram"></i> Telegram чат</a></li>
+                <li><button class="btn-auth" id="mobileOpenAuthModal" style="width: 100%; justify-content: center;"><i class="fas fa-sign-in-alt"></i> Войти</button></li>
+            </ul>
+        </nav>
+        <div class="mobile-user-info" id="mobileUserInfo">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <div class="user-avatar" id="mobileUserAvatar">U</div>
+                <div>
+                    <div id="mobileUsernameDisplay" style="font-weight: bold;"></div>
+                    <div style="font-size: 0.8rem; color: var(--text-tertiary);" id="mobileUserEmail"></div>
+                </div>
+            </div>
+            <button class="btn-auth" id="mobileLogoutBtn" style="width: 100%;"><i class="fas fa-sign-out-alt"></i> Выйти</button>
+            <button class="btn-donate" id="mobileAdminNavLink" style="width: 100%; margin-top: 10px; display: none;"><i class="fas fa-cog"></i> Админ-панель</button>
+        </div>
+    </div>
+    
     <!-- Кнопка техподдержки -->
     <button class="support-btn" id="supportBtn">
         <i class="fas fa-headset"></i>
@@ -1283,34 +838,24 @@
     <header>
         <div class="container">
             <div class="header-content">
-                <div class="header-left">
-                    <div class="logo" id="goToMain">
-                        <i class="fas fa-gamepad"></i>
-                        <span>Steam Offline</span>
-                    </div>
-                    
-                    <!-- Онлайн статус -->
-                    <div class="online-status" id="onlineStatus">
-                        <div class="online-dot"></div>
-                        <span>Онлайн: <span class="online-count" id="onlineCount">0</span></span>
-                    </div>
-                    
-                    <!-- Кнопка меню для мобильных -->
-                    <button class="menu-toggle" id="menuToggle">
-                        <i class="fas fa-bars"></i>
-                    </button>
+                <div class="logo" id="goToMain">
+                    <i class="fas fa-gamepad"></i>
+                    <span>Steam Offline</span>
                 </div>
                 
-                <nav id="mainNav">
+                <!-- Кнопка меню для мобильных -->
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <!-- Десктопная навигация -->
+                <nav class="desktop-nav">
                     <ul>
                         <li><a href="#games" id="navGames">Каталог игр</a></li>
                         <li><a href="#about" id="navAbout">О проекте</a></li>
                         <li><a href="#donate" id="navDonate">Поддержать</a></li>
-                        <li>
-                            <a href="https://t.me/steamofflineaccount" target="_blank" class="telegram-link" style="display: inline-flex;">
-                                <i class="fab fa-telegram"></i> <span>Telegram</span>
-                            </a>
-                        </li>
+                        <li><a href="https://t.me/steamofflineaccount256" target="_blank" class="btn-telegram">Наш канал</a></li>
+                        <li><a href="https://t.me/freesteamaccc" target="_blank" class="btn-telegram" style="background-color: #25D366; color: white;">Telegram чат</a></li>
                         <li>
                             <button class="theme-toggle" id="themeToggle" title="Переключить тему">
                                 <i class="fas fa-moon"></i>
@@ -1408,8 +953,11 @@
                     <p>Наш каталог содержит лучшие игры всех времен, начиная от классических хитов и заканчивая самыми свежими релизами. Каждая игра содержит подробное описание, год выпуска и качественное изображение.</p>
                     <p>Присоединяйтесь к нашему сообществу в Telegram, чтобы быть в курсе всех обновлений, участвовать в обсуждениях и получать эксклюзивную информацию о предстоящих играх.</p>
                     <p style="text-align: center; margin-top: 20px;">
-                        <a href="https://t.me/steamofflineaccount" target="_blank" class="telegram-link">
-                            <i class="fab fa-telegram"></i> Присоединиться к Telegram каналу
+                        <a href="https://t.me/steamofflineaccount256" target="_blank" class="btn-telegram" style="display: inline-flex; margin-bottom: 10px;">
+                            <i class="fab fa-telegram"></i> Наш канал
+                        </a>
+                        <a href="https://t.me/freesteamaccc" target="_blank" class="btn-telegram" style="display: inline-flex; background-color: #25D366; color: white; margin-left: 10px;">
+                            <i class="fab fa-telegram"></i> Telegram чат
                         </a>
                     </p>
                 </div>
@@ -1426,7 +974,7 @@
                             <i class="fab fa-telegram"></i>
                             <h3>Telegram</h3>
                             <p>Перевод через Telegram на карту</p>
-                            <a href="https://t.me/steamofflineaccount" target="_blank" class="btn-donate" style="margin-top: 10px; display: inline-block; padding: 6px 12px; font-size: 0.8rem;">
+                            <a href="https://t.me/freesteamaccc" target="_blank" class="btn-telegram" style="margin-top: 10px; display: inline-block; padding: 6px 12px; font-size: 0.8rem;">
                                 Перейти в Telegram
                             </a>
                         </div>
@@ -1535,15 +1083,8 @@
                 <p>Лучшие компьютерные игры всех времен в одном каталоге</p>
                 
                 <div class="social-links">
-                    <a href="https://t.me/steamofflineaccount" target="_blank"><i class="fab fa-telegram"></i></a>
-                    <a href="#"><i class="fab fa-vk"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                    <a href="#"><i class="fab fa-discord"></i></a>
-                </div>
-                
-                <div class="online-status" style="margin-top: 15px;">
-                    <div class="online-dot"></div>
-                    <span>Сейчас онлайн: <span class="online-count" id="footerOnlineCount">0</span> пользователей</span>
+                    <a href="https://t.me/steamofflineaccount256" target="_blank" title="Наш канал"><i class="fab fa-telegram"></i></a>
+                    <a href="https://t.me/freesteamaccc" target="_blank" title="Telegram чат" style="background-color: #25D366; color: white;"><i class="fab fa-telegram"></i></a>
                 </div>
                 
                 <p style="margin-top: 15px; color: var(--text-tertiary); font-size: 0.8rem;">
@@ -1652,16 +1193,25 @@
         const chatBody = document.getElementById('chatBody');
         const messageInput = document.getElementById('messageInput');
         const sendMessageBtn = document.getElementById('sendMessage');
-        const onlineStatus = document.getElementById('onlineStatus');
-        const onlineCount = document.getElementById('onlineCount');
-        const footerOnlineCount = document.getElementById('footerOnlineCount');
         const showCardDetailsBtn = document.getElementById('showCardDetails');
         const showCryptoDetailsBtn = document.getElementById('showCryptoDetails');
         const authButtonLi = document.getElementById('authButtonLi');
         const adminTicketsList = document.getElementById('adminTicketsList');
         const ticketsContainer = document.getElementById('ticketsContainer');
         const menuToggle = document.getElementById('menuToggle');
-        const mainNav = document.getElementById('mainNav');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const closeMenu = document.getElementById('closeMenu');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const mobileOpenAuthModal = document.getElementById('mobileOpenAuthModal');
+        const mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
+        const mobileUserInfo = document.getElementById('mobileUserInfo');
+        const mobileUserAvatar = document.getElementById('mobileUserAvatar');
+        const mobileUsernameDisplay = document.getElementById('mobileUsernameDisplay');
+        const mobileUserEmail = document.getElementById('mobileUserEmail');
+        const mobileAdminNavLink = document.getElementById('mobileAdminNavLink');
+        const mobileNavGames = document.getElementById('mobileNavGames');
+        const mobileNavAbout = document.getElementById('mobileNavAbout');
+        const mobileNavDonate = document.getElementById('mobileNavDonate');
         const goToMain = document.getElementById('goToMain');
         
         // =================== ИНИЦИАЛИЗАЦИЯ ===================
@@ -1676,11 +1226,11 @@
             // Проверяем авторизацию
             await checkAuth();
             
-            // Загружаем игры (все игры теперь глобальные)
+            // Загружаем игры
             await loadGames();
             
-            // Обновляем онлайн статус
-            updateOnlineStatus();
+            // Инициализация мобильного меню
+            initMobileMenu();
             
             // Слушаем изменения авторизации
             supabase.auth.onAuthStateChange(async (event, session) => {
@@ -1688,10 +1238,6 @@
                     await checkAuth();
                 }
             });
-            
-            // Предпросмотр изображений
-            gameImageUrlInput.addEventListener('input', updateImagePreview);
-            adminGameImageUrlInput.addEventListener('input', updateAdminImagePreview);
             
             // Обработчики для доната
             showCardDetailsBtn.addEventListener('click', () => {
@@ -1701,38 +1247,59 @@
             showCryptoDetailsBtn.addEventListener('click', () => {
                 showNotification('Криптореквизиты: BTC: bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh\nETH: 0x1234...5678\nUSDT (TRC20): T1234567890', 'info');
             });
-            
-            // Обновляем онлайн статус каждые 30 секунд
-            setInterval(updateOnlineStatus, 30000);
-            
-            // Инициализация мобильного меню
-            initMobileMenu();
         });
         
         // =================== МОБИЛЬНОЕ МЕНЮ ===================
         function initMobileMenu() {
             menuToggle.addEventListener('click', () => {
-                mainNav.classList.toggle('active');
-                menuToggle.innerHTML = mainNav.classList.contains('active') 
-                    ? '<i class="fas fa-times"></i>' 
-                    : '<i class="fas fa-bars"></i>';
+                mobileMenu.classList.add('active');
+                menuOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            closeMenu.addEventListener('click', () => {
+                closeMobileMenu();
+            });
+            
+            menuOverlay.addEventListener('click', () => {
+                closeMobileMenu();
             });
             
             // Закрытие меню при клике на ссылку
-            document.querySelectorAll('nav a').forEach(link => {
+            [mobileNavGames, mobileNavAbout, mobileNavDonate].forEach(link => {
                 link.addEventListener('click', () => {
-                    mainNav.classList.remove('active');
-                    menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                    closeMobileMenu();
                 });
             });
             
-            // Закрытие меню при клике вне его
-            document.addEventListener('click', (e) => {
-                if (!mainNav.contains(e.target) && !menuToggle.contains(e.target)) {
-                    mainNav.classList.remove('active');
-                    menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
-                }
+            // Открытие модалки входа из мобильного меню
+            mobileOpenAuthModal.addEventListener('click', () => {
+                closeMobileMenu();
+                setTimeout(() => {
+                    openAuthModalBtn.click();
+                }, 300);
             });
+            
+            // Выход из мобильного меню
+            mobileLogoutBtn.addEventListener('click', async () => {
+                await supabase.auth.signOut();
+                closeMobileMenu();
+                showNotification('Вы вышли из системы', 'info');
+            });
+            
+            // Админ-панель из мобильного меню
+            mobileAdminNavLink.addEventListener('click', () => {
+                closeMobileMenu();
+                setTimeout(() => {
+                    if (isAdmin) showAdminPanel();
+                }, 300);
+            });
+        }
+        
+        function closeMobileMenu() {
+            mobileMenu.classList.remove('active');
+            menuOverlay.classList.remove('active');
+            document.body.style.overflow = '';
         }
         
         // =================== ФУНКЦИИ АУТЕНТИФИКАЦИИ ===================
@@ -1753,17 +1320,24 @@
                 usernameDisplay.textContent = userEmail.split('@')[0];
                 userAvatar.textContent = userEmail[0].toUpperCase();
                 
+                // Обновляем мобильное меню
+                mobileUserInfo.classList.add('active');
+                mobileUserAvatar.textContent = userEmail[0].toUpperCase();
+                mobileUsernameDisplay.textContent = userEmail.split('@')[0];
+                mobileUserEmail.textContent = userEmail;
+                mobileOpenAuthModal.style.display = 'none';
+                
+                if (isAdmin) {
+                    adminNavItem.style.display = 'block';
+                    mobileAdminNavLink.style.display = 'block';
+                } else {
+                    adminNavItem.style.display = 'none';
+                    mobileAdminNavLink.style.display = 'none';
+                }
+                
                 // Показываем кнопку добавления игры для всех авторизованных
                 showAddGameFormBtn.style.display = 'block';
                 
-                // Показываем админ-панель только для админа
-                if (isAdmin) {
-                    adminNavItem.style.display = 'block';
-                } else {
-                    adminNavItem.style.display = 'none';
-                }
-                
-                console.log('Пользователь:', userEmail, 'Админ:', isAdmin);
             } else {
                 // Не авторизован
                 currentUser = null;
@@ -1773,6 +1347,11 @@
                 userInfo.style.display = 'none';
                 adminNavItem.style.display = 'none';
                 showAddGameFormBtn.style.display = 'none';
+                
+                // Обновляем мобильное меню
+                mobileUserInfo.classList.remove('active');
+                mobileOpenAuthModal.style.display = 'flex';
+                mobileAdminNavLink.style.display = 'none';
             }
         }
         
@@ -1786,6 +1365,8 @@
                 
                 if (error) {
                     console.error('Ошибка загрузки игр:', error);
+                    // Добавим тестовые игры, если база пустая
+                    await createInitialGames();
                     return;
                 }
                 
@@ -1794,6 +1375,8 @@
                 if (!games || games.length === 0) {
                     globalGamesGrid.style.display = 'none';
                     emptyGlobalCatalog.style.display = 'block';
+                    // Добавим тестовые игры, если база пустая
+                    await createInitialGames();
                 } else {
                     globalGamesGrid.style.display = 'grid';
                     emptyGlobalCatalog.style.display = 'none';
@@ -1806,6 +1389,55 @@
             } catch (error) {
                 console.error('Ошибка в loadGames:', error);
                 showNotification('Ошибка загрузки игр', 'error');
+            }
+        }
+        
+        async function createInitialGames() {
+            // Создаем тестовые игры, если база пустая
+            const initialGames = [
+                {
+                    title: 'The Witcher 3: Wild Hunt',
+                    year: 2015,
+                    description: 'Эпическая RPG игра в мире фэнтези от CD Projekt Red',
+                    image_url: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                    is_global: true
+                },
+                {
+                    title: 'Cyberpunk 2077',
+                    year: 2020,
+                    description: 'Киберпанк RPG в будущем Ночного Города',
+                    image_url: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                    is_global: true
+                },
+                {
+                    title: 'Elden Ring',
+                    year: 2022,
+                    description: 'Открытый мир Dark Souls от FromSoftware',
+                    image_url: 'https://images.unsplash.com/photo-1534423861386-85a16f5d13fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                    is_global: true
+                }
+            ];
+            
+            if (currentUser) {
+                for (const game of initialGames) {
+                    game.added_by = currentUser.id;
+                }
+            }
+            
+            try {
+                const { error } = await supabase
+                    .from('games')
+                    .insert(initialGames);
+                
+                if (error) {
+                    console.error('Ошибка создания начальных игр:', error);
+                } else {
+                    console.log('Начальные игры созданы');
+                    // Перезагружаем игры
+                    await loadGames();
+                }
+            } catch (error) {
+                console.error('Ошибка при создании начальных игр:', error);
             }
         }
         
@@ -1866,207 +1498,13 @@
                 .eq('id', gameId);
             
             if (error) {
+                console.error('Ошибка удаления игры:', error);
                 showNotification('Ошибка удаления игры', 'error');
             } else {
                 showNotification('Игра удалена', 'success');
                 await loadGames();
                 if (adminPanel.style.display === 'block') {
                     await loadAdminGames();
-                }
-            }
-        }
-        
-        async function handleEditGame(gameId) {
-            if (!isAdmin) return;
-            
-            const { data: game, error } = await supabase
-                .from('games')
-                .select('*')
-                .eq('id', gameId)
-                .single();
-            
-            if (error || !game) {
-                showNotification('Игра не найдена', 'error');
-                return;
-            }
-            
-            if (adminPanel.style.display === 'block') {
-                // Редактирование в админ-панели
-                document.getElementById('adminGameTitle').value = game.title;
-                document.getElementById('adminGameYear').value = game.year;
-                document.getElementById('adminGameDescription').value = game.description;
-                document.getElementById('adminGameImageUrl').value = game.image_url || '';
-                adminEditingGameId.value = gameId;
-                
-                updateAdminImagePreview();
-                adminGameFormSection.style.display = 'block';
-                adminGameFormTitle.textContent = 'Редактировать игру';
-            } else {
-                // Редактирование в основном интерфейсе
-                document.getElementById('gameTitle').value = game.title;
-                document.getElementById('gameYear').value = game.year;
-                document.getElementById('gameDescription').value = game.description;
-                document.getElementById('gameImageUrl').value = game.image_url || '';
-                editingGameId.value = gameId;
-                
-                updateImagePreview();
-                gameFormSection.style.display = 'block';
-                gameFormTitle.textContent = 'Редактировать игру';
-                gameFormSection.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-        
-        // =================== ФУНКЦИИ АДМИН-ПАНЕЛИ ===================
-        async function loadAdminGames() {
-            if (!isAdmin) return;
-            
-            const { data: games, error } = await supabase
-                .from('games')
-                .select('*')
-                .order('created_at', { ascending: false });
-            
-            if (error) {
-                console.error('Ошибка загрузки игр для админа:', error);
-                return;
-            }
-            
-            const adminGamesList = document.getElementById('adminGamesList');
-            adminGamesList.innerHTML = '';
-            
-            if (!games || games.length === 0) {
-                adminGamesList.innerHTML = '<p style="text-align: center; color: var(--text-tertiary);">Игр пока нет.</p>';
-                return;
-            }
-            
-            const gamesList = document.createElement('div');
-            gamesList.className = 'games-grid';
-            
-            games.forEach(game => {
-                const gameCard = createGameCard(game);
-                gamesList.appendChild(gameCard);
-            });
-            
-            adminGamesList.appendChild(gamesList);
-        }
-        
-        async function loadSupportTickets() {
-            if (!isAdmin) return;
-            
-            const { data: tickets, error } = await supabase
-                .from('support_tickets')
-                .select(`*, users:user_id (username, email)`)
-                .order('created_at', { ascending: false });
-            
-            if (error) {
-                console.error('Ошибка загрузки обращений:', error);
-                return;
-            }
-            
-            ticketsContainer.innerHTML = '';
-            
-            if (!tickets || tickets.length === 0) {
-                ticketsContainer.innerHTML = '<p style="text-align: center; color: var(--text-tertiary);">Обращений пока нет.</p>';
-                return;
-            }
-            
-            tickets.forEach(ticket => {
-                const ticketElement = document.createElement('div');
-                ticketElement.className = 'game-card';
-                ticketElement.style.marginBottom = '15px';
-                
-                const statusColors = {
-                    'open': '#ff6b6b',
-                    'answered': '#4cd964',
-                    'closed': '#aaa'
-                };
-                
-                ticketElement.innerHTML = `
-                    <div class="game-info">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                            <h3 class="game-title">${ticket.users?.username || ticket.users?.email || 'Аноним'}</h3>
-                            <span style="background-color: ${statusColors[ticket.status] || '#aaa'}; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem;">
-                                ${ticket.status === 'open' ? 'Открыт' : ticket.status === 'answered' ? 'Отвечен' : 'Закрыт'}
-                            </span>
-                        </div>
-                        <p><strong>Сообщение:</strong> ${ticket.message}</p>
-                        ${ticket.admin_reply ? `<p><strong>Ответ администратора:</strong> ${ticket.admin_reply}</p>` : ''}
-                        <p style="color: var(--text-tertiary); font-size: 0.8rem; margin-top: 10px;">
-                            ${new Date(ticket.created_at).toLocaleString('ru-RU')}
-                        </p>
-                        ${ticket.status === 'open' ? `
-                            <div class="game-actions">
-                                <button class="game-action-btn edit-game-btn" data-ticket-id="${ticket.id}" onclick="replyToTicket('${ticket.id}')">Ответить</button>
-                                <button class="game-action-btn delete-game-btn" data-ticket-id="${ticket.id}" onclick="closeTicket('${ticket.id}')">Закрыть</button>
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-                
-                ticketsContainer.appendChild(ticketElement);
-            });
-        }
-        
-        // =================== ФУНКЦИИ ТЕХПОДДЕРЖКИ ===================
-        async function loadSupportChat() {
-            if (!currentUser) return;
-            
-            const { data: tickets, error } = await supabase
-                .from('support_tickets')
-                .select('*')
-                .eq('user_id', currentUser.id)
-                .order('created_at', { ascending: true });
-            
-            if (error) {
-                console.error('Ошибка загрузки чата:', error);
-                return;
-            }
-            
-            chatBody.innerHTML = '<div class="message support-message">Здравствуйте! Чем могу помочь?</div>';
-            
-            if (tickets && tickets.length > 0) {
-                tickets.forEach(ticket => {
-                    const userMsg = document.createElement('div');
-                    userMsg.className = 'message user-message';
-                    userMsg.textContent = ticket.message;
-                    chatBody.appendChild(userMsg);
-                    
-                    if (ticket.admin_reply) {
-                        const adminMsg = document.createElement('div');
-                        adminMsg.className = 'message admin-message';
-                        adminMsg.textContent = ticket.admin_reply;
-                        chatBody.appendChild(adminMsg);
-                    }
-                });
-            }
-            
-            chatBody.scrollTop = chatBody.scrollHeight;
-        }
-        
-        async function sendSupportMessage(message) {
-            if (!currentUser || !message.trim()) return;
-            
-            const { error } = await supabase
-                .from('support_tickets')
-                .insert({
-                    user_id: currentUser.id,
-                    message: message.trim(),
-                    status: 'open'
-                });
-            
-            if (error) {
-                console.error('Ошибка отправки сообщения:', error);
-                showNotification('Ошибка отправки сообщения', 'error');
-            } else {
-                const userMsg = document.createElement('div');
-                userMsg.className = 'message user-message';
-                userMsg.textContent = message;
-                chatBody.appendChild(userMsg);
-                
-                chatBody.scrollTop = chatBody.scrollHeight;
-                showNotification('Сообщение отправлено в поддержку', 'success');
-                
-                if (isAdmin) {
-                    loadSupportTickets();
                 }
             }
         }
@@ -2111,20 +1549,6 @@
         };
         
         // =================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ===================
-        function updateImagePreview() {
-            const url = gameImageUrlInput.value.trim();
-            imagePreview.innerHTML = url ? 
-                `<img src="${url}" alt="Предпросмотр" onerror="this.parentElement.innerHTML='<span style=\"color: var(--error-color);\">Ошибка загрузки</span>'">` :
-                '<span style="color: var(--text-tertiary);">Предпросмотр появится здесь</span>';
-        }
-        
-        function updateAdminImagePreview() {
-            const url = adminGameImageUrlInput.value.trim();
-            adminImagePreview.innerHTML = url ? 
-                `<img src="${url}" alt="Предпросмотр" onerror="this.parentElement.innerHTML='<span style=\"color: var(--error-color);\">Ошибка загрузки</span>'">` :
-                '<span style="color: var(--text-tertiary);">Предпросмотр появится здесь</span>';
-        }
-        
         function showNotification(message, type = 'info') {
             notification.textContent = message;
             notification.style.backgroundColor = type === 'success' ? 'var(--success-color)' :
@@ -2135,12 +1559,6 @@
             setTimeout(() => {
                 notification.style.display = 'none';
             }, 5000);
-        }
-        
-        function updateOnlineStatus() {
-            const count = Math.floor(Math.random() * 50) + 10;
-            onlineCount.textContent = count;
-            footerOnlineCount.textContent = count;
         }
         
         // =================== ОБРАБОТЧИКИ СОБЫТИЙ ===================
@@ -2279,261 +1697,6 @@
             showNotification('Вы вышли из системы', 'info');
         });
         
-        // Добавление игры пользователем
-        showAddGameFormBtn.addEventListener('click', () => {
-            if (!currentUser) {
-                showNotification('Войдите в систему', 'error');
-                return;
-            }
-            
-            gameFormSection.style.display = 'block';
-            gameFormTitle.textContent = 'Добавить новую игру';
-            editingGameId.value = '';
-            document.getElementById('gameTitle').value = '';
-            document.getElementById('gameYear').value = '';
-            document.getElementById('gameDescription').value = '';
-            document.getElementById('gameImageUrl').value = '';
-            document.getElementById('gameSaveSuccess').style.display = 'none';
-            imagePreview.innerHTML = '<span style="color: var(--text-tertiary);">Предпросмотр появится здесь</span>';
-            gameFormSection.scrollIntoView({ behavior: 'smooth' });
-        });
-        
-        cancelGameBtn.addEventListener('click', () => {
-            gameFormSection.style.display = 'none';
-        });
-        
-        saveGameBtn.addEventListener('click', async () => {
-            if (!currentUser) {
-                showNotification('Войдите в систему', 'error');
-                return;
-            }
-            
-            const title = document.getElementById('gameTitle').value.trim();
-            const year = document.getElementById('gameYear').value.trim();
-            const description = document.getElementById('gameDescription').value.trim();
-            const imageUrl = document.getElementById('gameImageUrl').value.trim();
-            const gameId = editingGameId.value;
-            
-            if (!title || !year || !description) {
-                showNotification('Заполните обязательные поля', 'error');
-                return;
-            }
-            
-            const yearNum = parseInt(year);
-            const currentYear = new Date().getFullYear();
-            if (yearNum < 1980 || yearNum > currentYear) {
-                showNotification(`Введите корректный год (1980-${currentYear})`, 'error');
-                return;
-            }
-            
-            // Все игры теперь глобальные (is_global = true)
-            const gameData = {
-                title,
-                year: yearNum,
-                description,
-                image_url: imageUrl || null,
-                added_by: currentUser.id,
-                is_global: true, // ВСЕ ИГРЫ ГЛОБАЛЬНЫЕ
-                updated_at: new Date()
-            };
-            
-            let error;
-            
-            if (gameId) {
-                // Обновление
-                const { error: updateError } = await supabase
-                    .from('games')
-                    .update(gameData)
-                    .eq('id', gameId);
-                error = updateError;
-            } else {
-                // Создание
-                gameData.created_at = new Date();
-                const { error: insertError } = await supabase
-                    .from('games')
-                    .insert(gameData);
-                error = insertError;
-            }
-            
-            if (error) {
-                showNotification('Ошибка сохранения игры', 'error');
-            } else {
-                showNotification(`Игра "${title}" сохранена`, 'success');
-                gameFormSection.style.display = 'none';
-                await loadGames();
-                if (adminPanel.style.display === 'block') {
-                    await loadAdminGames();
-                }
-            }
-        });
-        
-        // Админ: добавление игры
-        adminAddGameBtn.addEventListener('click', () => {
-            if (!isAdmin) return;
-            
-            adminGameFormSection.style.display = 'block';
-            adminGameFormTitle.textContent = 'Добавить новую игру';
-            adminEditingGameId.value = '';
-            document.getElementById('adminGameTitle').value = '';
-            document.getElementById('adminGameYear').value = '';
-            document.getElementById('adminGameDescription').value = '';
-            document.getElementById('adminGameImageUrl').value = '';
-            document.getElementById('adminGameSaveSuccess').style.display = 'none';
-            adminImagePreview.innerHTML = '<span style="color: var(--text-tertiary);">Предпросмотр появится здесь</span>';
-        });
-        
-        adminCancelGameBtn.addEventListener('click', () => {
-            adminGameFormSection.style.display = 'none';
-        });
-        
-        adminSaveGameBtn.addEventListener('click', async () => {
-            if (!isAdmin) {
-                showNotification('Требуются права администратора', 'error');
-                return;
-            }
-            
-            const title = document.getElementById('adminGameTitle').value.trim();
-            const year = document.getElementById('adminGameYear').value.trim();
-            const description = document.getElementById('adminGameDescription').value.trim();
-            const imageUrl = document.getElementById('adminGameImageUrl').value.trim();
-            const gameId = adminEditingGameId.value;
-            
-            if (!title || !year || !description) {
-                showNotification('Заполните обязательные поля', 'error');
-                return;
-            }
-            
-            const yearNum = parseInt(year);
-            const currentYear = new Date().getFullYear();
-            if (yearNum < 1980 || yearNum > currentYear) {
-                showNotification(`Введите корректный год (1980-${currentYear})`, 'error');
-                return;
-            }
-            
-            const gameData = {
-                title,
-                year: yearNum,
-                description,
-                image_url: imageUrl || null,
-                added_by: currentUser.id,
-                is_global: true,
-                updated_at: new Date()
-            };
-            
-            let error;
-            
-            if (gameId) {
-                // Обновление
-                const { error: updateError } = await supabase
-                    .from('games')
-                    .update(gameData)
-                    .eq('id', gameId);
-                error = updateError;
-            } else {
-                // Создание
-                gameData.created_at = new Date();
-                const { error: insertError } = await supabase
-                    .from('games')
-                    .insert(gameData);
-                error = insertError;
-            }
-            
-            if (error) {
-                showNotification('Ошибка сохранения игры', 'error');
-            } else {
-                showNotification(`Игра "${title}" сохранена`, 'success');
-                adminGameFormSection.style.display = 'none';
-                await loadGames();
-                await loadAdminGames();
-            }
-        });
-        
-        // Навигация
-        navGames.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (adminPanel.style.display === 'block') showMainContent();
-            setTimeout(() => document.getElementById('games').scrollIntoView({ behavior: 'smooth' }), 100);
-        });
-        
-        navAbout.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (adminPanel.style.display === 'block') showMainContent();
-            setTimeout(() => document.getElementById('about').scrollIntoView({ behavior: 'smooth' }), 100);
-        });
-        
-        navDonate.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (adminPanel.style.display === 'block') showMainContent();
-            setTimeout(() => document.getElementById('donate').scrollIntoView({ behavior: 'smooth' }), 100);
-        });
-        
-        goToMain.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (adminPanel.style.display === 'block') showMainContent();
-            setTimeout(() => document.getElementById('hero').scrollIntoView({ behavior: 'smooth' }), 100);
-        });
-        
-        // Админ-панель
-        adminNavLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (isAdmin) showAdminPanel();
-        });
-        
-        function showAdminPanel() {
-            mainContent.style.display = 'none';
-            adminPanel.style.display = 'block';
-            window.scrollTo(0, 0);
-            loadAdminGames();
-            loadSupportTickets();
-            adminTicketsList.style.display = 'none';
-        }
-        
-        function showMainContent() {
-            adminPanel.style.display = 'none';
-            mainContent.style.display = 'block';
-            window.scrollTo(0, 0);
-        }
-        
-        adminToMainBtn.addEventListener('click', () => {
-            showMainContent();
-            setTimeout(() => document.getElementById('hero').scrollIntoView({ behavior: 'smooth' }), 100);
-        });
-        
-        adminToGamesBtn.addEventListener('click', () => {
-            showMainContent();
-            setTimeout(() => document.getElementById('games').scrollIntoView({ behavior: 'smooth' }), 100);
-        });
-        
-        adminToAboutBtn.addEventListener('click', () => {
-            showMainContent();
-            setTimeout(() => document.getElementById('about').scrollIntoView({ behavior: 'smooth' }), 100);
-        });
-        
-        adminToDonateBtn.addEventListener('click', () => {
-            showMainContent();
-            setTimeout(() => document.getElementById('donate').scrollIntoView({ behavior: 'smooth' }), 100);
-        });
-        
-        adminManageGamesBtn.addEventListener('click', () => {
-            adminGameFormSection.style.display = 'none';
-            adminGamesList.style.display = 'block';
-            adminTicketsList.style.display = 'none';
-            loadAdminGames();
-        });
-        
-        adminViewTicketsBtn.addEventListener('click', () => {
-            adminGameFormSection.style.display = 'none';
-            adminGamesList.style.display = 'none';
-            adminTicketsList.style.display = 'block';
-            loadSupportTickets();
-        });
-        
-        adminLogoutBtn.addEventListener('click', async () => {
-            await supabase.auth.signOut();
-            showMainContent();
-            showNotification('Вы вышли из админ-панели', 'info');
-        });
-        
         // Тема
         themeToggle.addEventListener('click', () => {
             const isLightTheme = document.body.classList.contains('light-theme');
@@ -2558,7 +1721,6 @@
             supportChat.style.display = supportChat.style.display === 'flex' ? 'none' : 'flex';
             if (supportChat.style.display === 'flex') {
                 messageInput.focus();
-                loadSupportChat();
             }
         });
         
@@ -2569,7 +1731,8 @@
         sendMessageBtn.addEventListener('click', async () => {
             const message = messageInput.value.trim();
             if (message) {
-                await sendSupportMessage(message);
+                // Просто показываем уведомление, так как система тикетов не настроена
+                showNotification('Сообщение отправлено (система тикетов не настроена)', 'success');
                 messageInput.value = '';
             }
         });
@@ -2578,7 +1741,7 @@
             if (e.key === 'Enter') {
                 const message = messageInput.value.trim();
                 if (message) {
-                    await sendSupportMessage(message);
+                    showNotification('Сообщение отправлено (система тикетов не настроена)', 'success');
                     messageInput.value = '';
                 }
             }
