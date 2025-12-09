@@ -1432,12 +1432,49 @@
 
     <script>
         // =================== КОНФИГУРАЦИЯ SUPABASE ===================
-        // ЗАМЕНИТЕ ЭТИ ДАННЫЕ НА ВАШИ С SUPABASE!
+        // Ваши реальные данные Supabase
         const SUPABASE_URL = 'https://fxukofvsfwzbnibawweg.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4dWtvZnZzZnd6Ym5pYmF3d2VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyMDkwOTcsImV4cCI6MjA4MDc4NTA5N30.ErgHvEx4Dof53o2g40A7i-KdLOXzWnjpt0NjR7ohYuo';
         
-        // Инициализация Supabase
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Проверяем наличие кириллицы в конфигурации
+        console.log('Проверка конфигурации Supabase:');
+        console.log('URL:', SUPABASE_URL);
+        console.log('Anon Key первые 10 символов:', SUPABASE_ANON_KEY.substring(0, 10) + '...');
+        
+        // Инициализация Supabase с обработкой ошибок
+        let supabase;
+        try {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+                auth: {
+                    persistSession: true,
+                    autoRefreshToken: true
+                }
+            });
+            console.log('Supabase успешно инициализирован');
+        } catch (error) {
+            console.error('Ошибка инициализации Supabase:', error);
+            // Создаем заглушку для отладки
+            supabase = {
+                auth: {
+                    getSession: async () => ({ data: { session: null } }),
+                    signInWithPassword: async () => ({ error: { message: 'Supabase не инициализирован' } }),
+                    signUp: async () => ({ error: { message: 'Supabase не инициализирован' } }),
+                    signOut: async () => ({ error: { message: 'Supabase не инициализирован' } }),
+                    onAuthStateChange: () => ({})
+                },
+                from: () => ({
+                    select: () => ({
+                        eq: () => ({
+                            single: async () => ({ data: null, error: { message: 'Supabase не инициализирован' } })
+                        }),
+                        order: async () => ({ data: [], error: { message: 'Supabase не инициализирован' } })
+                    }),
+                    insert: async () => ({ error: { message: 'Supabase не инициализирован' } }),
+                    update: async () => ({ error: { message: 'Supabase не инициализирован' } }),
+                    delete: async () => ({ error: { message: 'Supabase не инициализирован' } })
+                })
+            };
+        }
         
         // =================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ===================
         let currentUser = null;
@@ -1588,6 +1625,20 @@
                         showAddGameFormBtn.style.display = 'block';
                         userGamesSection.style.display = 'block';
                     }
+                } else {
+                    // Создаем запись пользователя, если её нет
+                    const { error } = await supabase
+                        .from('users')
+                        .insert({
+                            id: currentUser.id,
+                            email: currentUser.email,
+                            username: currentUser.email.split('@')[0],
+                            is_admin: false
+                        });
+                    
+                    if (error) {
+                        console.error('Ошибка создания пользователя:', error);
+                    }
                 }
             } else {
                 // Не авторизован
@@ -1604,61 +1655,70 @@
         
         // =================== ФУНКЦИИ ДЛЯ ИГР ===================
         async function loadGlobalGames() {
-            const { data: games, error } = await supabase
-                .from('games')
-                .select('*')
-                .eq('is_global', true)
-                .order('created_at', { ascending: false });
-            
-            if (error) {
-                console.error('Ошибка загрузки игр:', error);
-                return;
-            }
-            
-            globalGamesGrid.innerHTML = '';
-            
-            if (!games || games.length === 0) {
-                globalGamesGrid.style.display = 'none';
-                emptyGlobalCatalog.style.display = 'block';
-            } else {
-                globalGamesGrid.style.display = 'grid';
-                emptyGlobalCatalog.style.display = 'none';
+            try {
+                const { data: games, error } = await supabase
+                    .from('games')
+                    .select('*')
+                    .eq('is_global', true)
+                    .order('created_at', { ascending: false });
                 
-                games.forEach(game => {
-                    const gameCard = createGameCard(game, false, true);
-                    globalGamesGrid.appendChild(gameCard);
-                });
+                if (error) {
+                    console.error('Ошибка загрузки игр:', error);
+                    return;
+                }
+                
+                globalGamesGrid.innerHTML = '';
+                
+                if (!games || games.length === 0) {
+                    globalGamesGrid.style.display = 'none';
+                    emptyGlobalCatalog.style.display = 'block';
+                } else {
+                    globalGamesGrid.style.display = 'grid';
+                    emptyGlobalCatalog.style.display = 'none';
+                    
+                    games.forEach(game => {
+                        const gameCard = createGameCard(game, false, true);
+                        globalGamesGrid.appendChild(gameCard);
+                    });
+                }
+            } catch (error) {
+                console.error('Ошибка в loadGlobalGames:', error);
+                showNotification('Ошибка загрузки игр', 'error');
             }
         }
         
         async function loadUserGames() {
             if (!currentUser) return;
             
-            const { data: games, error } = await supabase
-                .from('games')
-                .select('*')
-                .eq('added_by', currentUser.id)
-                .eq('is_global', false)
-                .order('created_at', { ascending: false });
-            
-            if (error) {
-                console.error('Ошибка загрузки пользовательских игр:', error);
-                return;
-            }
-            
-            userGamesGrid.innerHTML = '';
-            
-            if (!games || games.length === 0) {
-                userGamesGrid.style.display = 'none';
-                emptyUserCatalog.style.display = 'block';
-            } else {
-                userGamesGrid.style.display = 'grid';
-                emptyUserCatalog.style.display = 'none';
+            try {
+                const { data: games, error } = await supabase
+                    .from('games')
+                    .select('*')
+                    .eq('added_by', currentUser.id)
+                    .eq('is_global', false)
+                    .order('created_at', { ascending: false });
                 
-                games.forEach(game => {
-                    const gameCard = createGameCard(game, true, false);
-                    userGamesGrid.appendChild(gameCard);
-                });
+                if (error) {
+                    console.error('Ошибка загрузки пользовательских игр:', error);
+                    return;
+                }
+                
+                userGamesGrid.innerHTML = '';
+                
+                if (!games || games.length === 0) {
+                    userGamesGrid.style.display = 'none';
+                    emptyUserCatalog.style.display = 'block';
+                } else {
+                    userGamesGrid.style.display = 'grid';
+                    emptyUserCatalog.style.display = 'none';
+                    
+                    games.forEach(game => {
+                        const gameCard = createGameCard(game, true, false);
+                        userGamesGrid.appendChild(gameCard);
+                    });
+                }
+            } catch (error) {
+                console.error('Ошибка в loadUserGames:', error);
             }
         }
         
@@ -1849,10 +1909,7 @@
             
             const { data: tickets, error } = await supabase
                 .from('support_tickets')
-                .select(`
-                    *,
-                    users:user_id (username, email)
-                `)
+                .select(`*, users:user_id (username, email)`)
                 .order('created_at', { ascending: false });
             
             if (error) {
@@ -2045,7 +2102,6 @@
         
         async function updateOnlineStatus() {
             // Простая реализация онлайн-статуса
-            // В реальном приложении нужно использовать Presence каналы Supabase
             const count = Math.floor(Math.random() * 50) + 10; // Заглушка
             onlineCount.textContent = count;
             footerOnlineCount.textContent = count;
@@ -2228,8 +2284,9 @@
             }
             
             const yearNum = parseInt(year);
-            if (yearNum < 1980 || yearNum > new Date().getFullYear()) {
-                showNotification('Введите корректный год', 'error');
+            const currentYear = new Date().getFullYear();
+            if (yearNum < 1980 || yearNum > currentYear) {
+                showNotification(`Введите корректный год (1980-${currentYear})`, 'error');
                 return;
             }
             
@@ -2308,8 +2365,9 @@
             }
             
             const yearNum = parseInt(year);
-            if (yearNum < 1980 || yearNum > new Date().getFullYear()) {
-                showNotification('Введите корректный год', 'error');
+            const currentYear = new Date().getFullYear();
+            if (yearNum < 1980 || yearNum > currentYear) {
+                showNotification(`Введите корректный год (1980-${currentYear})`, 'error');
                 return;
             }
             
@@ -2487,5 +2545,4 @@
         });
     </script>
 </body>
-
 </html>
