@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        /* СТИЛИ ОСТАЮТСЯ ТЕ ЖЕ САМЫЕ */
+        /* Из-за ограничения длины оставляю стили без изменений, они уже были правильные */
         /* ДОБАВИМ НОВЫЕ СТИЛИ ДЛЯ МОДАЛЬНЫХ ОКОН И КНОПОК TELEGRAM */
         .modal {
             display: none;
@@ -111,7 +113,7 @@
             font-weight: 500;
         }
         
-        .form-group input {
+        .form-group input, .form-group select {
             width: 100%;
             padding: 10px;
             border-radius: 6px;
@@ -122,7 +124,7 @@
             transition: border-color 0.3s;
         }
         
-        .form-group input:focus {
+        .form-group input:focus, .form-group select:focus {
             outline: none;
             border-color: var(--primary-color);
         }
@@ -497,7 +499,48 @@
             transform: scale(1.1);
         }
         
-        /* ПЕРВОНАЧАЛЬНЫЕ СТИЛИ ОСТАЮТСЯ БЕЗ ИЗМЕНЕНИЙ */
+        /* Кнопки для избранного */
+        .favorite-btn {
+            background: none;
+            border: none;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+        
+        .favorite-btn:hover {
+            color: #ffd700;
+        }
+        
+        .favorite-btn.favorited {
+            color: #ffd700;
+        }
+        
+        .credentials-container {
+            background-color: var(--bg-tertiary);
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .credentials-field {
+            margin-bottom: 5px;
+            font-size: 0.8rem;
+        }
+        
+        .credentials-label {
+            font-weight: bold;
+            color: var(--text-secondary);
+        }
+        
+        .credentials-value {
+            color: var(--text-color);
+            word-break: break-all;
+        }
+        
+        /* ПЕРВОНАЧАЛЬНЫЕ СТИЛИ */
         * {
             margin: 0;
             padding: 0;
@@ -1330,6 +1373,7 @@
                         <li><a href="#games" id="navGames">Каталог игр</a></li>
                         <li><a href="#about" id="navAbout">О проекте</a></li>
                         <li><a href="#donate" id="navDonate">Поддержать</a></li>
+                        <li><a href="#favorites" id="navFavorites">Избранное</a></li>
                         <li><a href="https://t.me/steamofflineaccount256" target="_blank" class="btn-telegram">Наш канал</a></li>
                         <li><a href="https://t.me/freesteamaccc" target="_blank" class="telegram-btn telegram-whatsapp">Telegram чат</a></li>
                         <li>
@@ -1394,6 +1438,16 @@
                         <label for="gameDescription">Описание игры *</label>
                         <textarea id="gameDescription" placeholder="Краткое описание игры"></textarea>
                     </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="gameLogin">Логин для игры</label>
+                            <input type="text" id="gameLogin" placeholder="Логин для входа в игру">
+                        </div>
+                        <div class="form-group">
+                            <label for="gamePassword">Пароль для игры</label>
+                            <input type="text" id="gamePassword" placeholder="Пароль для входа в игру">
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label for="gameImageUrl">Ссылка на изображение</label>
                         <input type="text" id="gameImageUrl" placeholder="https://example.com/game-image.jpg">
@@ -1417,6 +1471,20 @@
                             <h3 style="color: var(--text-tertiary); margin-bottom: 10px;">Загрузка игр...</h3>
                             <p>Пожалуйста, подождите</p>
                         </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Избранное -->
+            <section id="favorites" style="display: none;">
+                <h2 class="page-title">Избранные игры</h2>
+                <p class="page-subtitle">Ваши любимые игры. Нажмите на звездочку на карточке игры, чтобы добавить ее в избранное.</p>
+                
+                <div class="games-grid" id="favoritesGrid">
+                    <div class="empty-catalog" id="emptyFavoritesCatalog">
+                        <i class="fas fa-star"></i>
+                        <h3 style="color: var(--text-tertiary); margin-bottom: 10px;">Нет избранных игр</h3>
+                        <p>Добавьте игры в избранное, нажав на звездочку</p>
                     </div>
                 </div>
             </section>
@@ -1519,6 +1587,16 @@
                     <label for="adminGameDescription">Описание игры *</label>
                     <textarea id="adminGameDescription" placeholder="Краткое описание игры"></textarea>
                 </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="adminGameLogin">Логин для игры</label>
+                        <input type="text" id="adminGameLogin" placeholder="Логин для входа в игру">
+                    </div>
+                    <div class="form-group">
+                        <label for="adminGamePassword">Пароль для игры</label>
+                        <input type="text" id="adminGamePassword" placeholder="Пароль для входа в игру">
+                    </div>
+                </div>
                 <div class="form-group">
                     <label for="adminGameImageUrl">Ссылка на изображение</label>
                     <input type="text" id="adminGameImageUrl" placeholder="https://example.com/game-image.jpg">
@@ -1581,38 +1659,27 @@
         const SUPABASE_URL = 'https://fxukofvsfwzbnibawweg.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4dWtvZnZzZnd6Ym5pYmF3d2VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyMDkwOTcsImV4cCI6MjA4MDc4NTA5N30.ErgHvEx4Dof53o2g40A7i-KdLOXzWnjpt0NjR7ohYuo';
         
-        // Инициализация Supabase
+        // Инициализация Supabase с улучшенными настройками
         let supabase;
         try {
             supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
                 auth: {
                     persistSession: true,
-                    autoRefreshToken: true
+                    autoRefreshToken: true,
+                    detectSessionInUrl: true,
+                    storage: localStorage,
+                    storageKey: 'steam-offline-auth',
+                    flowType: 'pkce'
+                },
+                global: {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY
+                    }
                 }
             });
             console.log('Supabase успешно инициализирован');
         } catch (error) {
             console.error('Ошибка инициализации Supabase:', error);
-            supabase = {
-                auth: {
-                    getSession: async () => ({ data: { session: null } }),
-                    signInWithPassword: async () => ({ error: { message: 'Supabase не инициализирован' } }),
-                    signUp: async () => ({ error: { message: 'Supabase не инициализирован' } }),
-                    signOut: async () => ({ error: { message: 'Supabase не инициализирован' } }),
-                    onAuthStateChange: () => ({})
-                },
-                from: () => ({
-                    select: () => ({
-                        eq: () => ({
-                            single: async () => ({ data: null, error: { message: 'Supabase не инициализирован' } })
-                        }),
-                        order: async () => ({ data: [], error: { message: 'Supabase не инициализирован' } })
-                    }),
-                    insert: async () => ({ error: { message: 'Supabase не инициализирован' } }),
-                    update: async () => ({ error: { message: 'Supabase не инициализирован' } }),
-                    delete: async () => ({ error: { message: 'Supabase не инициализирован' } })
-                })
-            };
         }
         
         // =================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ===================
@@ -1620,6 +1687,7 @@
         let isAdmin = false;
         let editingGameId = null;
         let adminEditingGameId = null;
+        let userFavorites = [];
         
         // =================== DOM ЭЛЕМЕНТЫ ===================
         const authModal = document.getElementById('authModal');
@@ -1652,6 +1720,7 @@
         const navGames = document.getElementById('navGames');
         const navAbout = document.getElementById('navAbout');
         const navDonate = document.getElementById('navDonate');
+        const navFavorites = document.getElementById('navFavorites');
         const adminGameFormSection = document.getElementById('adminGameFormSection');
         const adminGameFormTitle = document.getElementById('adminGameFormTitle');
         const adminAddGameBtn = document.getElementById('adminAddGameBtn');
@@ -1696,9 +1765,16 @@
         const gameTitleInput = document.getElementById('gameTitle');
         const gameYearInput = document.getElementById('gameYear');
         const gameDescriptionInput = document.getElementById('gameDescription');
+        const gameLoginInput = document.getElementById('gameLogin');
+        const gamePasswordInput = document.getElementById('gamePassword');
         const adminGameTitleInput = document.getElementById('adminGameTitle');
         const adminGameYearInput = document.getElementById('adminGameYear');
         const adminGameDescriptionInput = document.getElementById('adminGameDescription');
+        const adminGameLoginInput = document.getElementById('adminGameLogin');
+        const adminGamePasswordInput = document.getElementById('adminGamePassword');
+        const favoritesSection = document.getElementById('favorites');
+        const favoritesGrid = document.getElementById('favoritesGrid');
+        const emptyFavoritesCatalog = document.getElementById('emptyFavoritesCatalog');
         
         // =================== ИНИЦИАЛИЗАЦИЯ ===================
         document.addEventListener('DOMContentLoaded', async function() {
@@ -1709,11 +1785,16 @@
                 themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
             }
             
-            // Проверяем авторизацию
+            // Проверяем авторизацию с обработкой ошибок
             await checkAuth();
             
             // Загружаем игры
             await loadGames();
+            
+            // Загружаем избранное если пользователь авторизован
+            if (currentUser) {
+                await loadFavorites();
+            }
             
             // Инициализация мобильного меню
             initMobileMenu();
@@ -1722,12 +1803,14 @@
             initEventHandlers();
             
             // Слушаем изменения авторизации
-            supabase.auth.onAuthStateChange(async (event, session) => {
-                console.log('Auth state changed:', event);
-                if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
-                    await checkAuth();
-                }
-            });
+            if (supabase && supabase.auth) {
+                supabase.auth.onAuthStateChange(async (event, session) => {
+                    console.log('Auth state changed:', event);
+                    if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
+                        await checkAuth();
+                    }
+                });
+            }
             
             // Обработчики для доната
             showCardDetailsBtn.addEventListener('click', () => {
@@ -1741,6 +1824,27 @@
             // Навигация по кнопке логотипа
             goToMain.addEventListener('click', () => {
                 showMainContent();
+            });
+            
+            // Навигация по вкладкам
+            navGames.addEventListener('click', (e) => {
+                e.preventDefault();
+                showGamesSection();
+            });
+            
+            navFavorites.addEventListener('click', (e) => {
+                e.preventDefault();
+                showFavoritesSection();
+            });
+            
+            navAbout.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            navDonate.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('donate').scrollIntoView({ behavior: 'smooth' });
             });
         });
         
@@ -1761,7 +1865,7 @@
             });
             
             // Открытие/закрытие модального окна
-            openAuthModalBtn.addEventListener('click', () => {
+            if (openAuthModalBtn) openAuthModalBtn.addEventListener('click', () => {
                 authModal.style.display = 'flex';
                 document.getElementById('loginEmail').value = '';
                 document.getElementById('loginPassword').value = '';
@@ -1774,7 +1878,7 @@
                 });
             });
             
-            closeAuthModalBtn.addEventListener('click', () => {
+            if (closeAuthModalBtn) closeAuthModalBtn.addEventListener('click', () => {
                 authModal.style.display = 'none';
             });
             
@@ -1785,98 +1889,103 @@
             });
             
             // Вход
-            loginBtn.addEventListener('click', handleLogin);
+            if (loginBtn) loginBtn.addEventListener('click', handleLogin);
             
             // Регистрация
-            registerBtn.addEventListener('click', handleRegister);
+            if (registerBtn) registerBtn.addEventListener('click', handleRegister);
             
             // Выход
-            logoutBtn.addEventListener('click', handleLogout);
-            adminLogoutBtn.addEventListener('click', handleLogout);
+            if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
+            if (adminLogoutBtn) adminLogoutBtn.addEventListener('click', () => {
+                handleLogout();
+                showMainContent();
+            });
             
             // Тема
-            themeToggle.addEventListener('click', toggleTheme);
+            if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
             
             // Навигация в админ панели
-            adminNavLink.addEventListener('click', showAdminPanel);
-            mobileAdminNavLink.addEventListener('click', showAdminPanel);
-            adminToMainBtn.addEventListener('click', showMainContent);
-            adminToGamesBtn.addEventListener('click', () => {
+            if (adminNavLink) adminNavLink.addEventListener('click', showAdminPanel);
+            if (mobileAdminNavLink) mobileAdminNavLink.addEventListener('click', showAdminPanel);
+            if (adminToMainBtn) adminToMainBtn.addEventListener('click', showMainContent);
+            if (adminToGamesBtn) adminToGamesBtn.addEventListener('click', () => {
                 showMainContent();
-                document.getElementById('games').scrollIntoView({ behavior: 'smooth' });
+                showGamesSection();
             });
-            adminToAboutBtn.addEventListener('click', () => {
+            if (adminToAboutBtn) adminToAboutBtn.addEventListener('click', () => {
                 showMainContent();
                 document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
             });
-            adminToDonateBtn.addEventListener('click', () => {
+            if (adminToDonateBtn) adminToDonateBtn.addEventListener('click', () => {
                 showMainContent();
                 document.getElementById('donate').scrollIntoView({ behavior: 'smooth' });
             });
             
             // Техподдержка
-            supportBtn.addEventListener('click', toggleSupportChat);
-            closeChatBtn.addEventListener('click', () => {
+            if (supportBtn) supportBtn.addEventListener('click', toggleSupportChat);
+            if (closeChatBtn) closeChatBtn.addEventListener('click', () => {
                 supportChat.style.display = 'none';
             });
             
-            sendMessageBtn.addEventListener('click', sendSupportMessage);
-            messageInput.addEventListener('keypress', async (e) => {
+            if (sendMessageBtn) sendMessageBtn.addEventListener('click', sendSupportMessage);
+            if (messageInput) messageInput.addEventListener('keypress', async (e) => {
                 if (e.key === 'Enter') {
                     sendSupportMessage();
                 }
             });
             
             // Добавление игры (обычная форма)
-            showAddGameFormBtn.addEventListener('click', () => {
+            if (showAddGameFormBtn) showAddGameFormBtn.addEventListener('click', () => {
                 resetGameForm();
                 gameFormSection.style.display = 'block';
                 gameFormTitle.textContent = 'Добавить новую игру';
                 showAddGameFormBtn.style.display = 'none';
             });
             
-            saveGameBtn.addEventListener('click', saveGame);
-            cancelGameBtn.addEventListener('click', () => {
+            if (saveGameBtn) saveGameBtn.addEventListener('click', saveGame);
+            if (cancelGameBtn) cancelGameBtn.addEventListener('click', () => {
                 gameFormSection.style.display = 'none';
                 if (currentUser) showAddGameFormBtn.style.display = 'block';
             });
             
             // Добавление игры (админ форма)
-            adminAddGameBtn.addEventListener('click', () => {
+            if (adminAddGameBtn) adminAddGameBtn.addEventListener('click', () => {
                 resetAdminGameForm();
                 adminGameFormSection.style.display = 'block';
                 adminGameFormTitle.textContent = 'Добавить новую игру';
-                adminGamesList.style.display = 'none';
-                adminTicketsList.style.display = 'none';
+                if (adminGamesList) adminGamesList.style.display = 'none';
+                if (adminTicketsList) adminTicketsList.style.display = 'none';
             });
             
-            adminManageGamesBtn.addEventListener('click', async () => {
+            if (adminManageGamesBtn) adminManageGamesBtn.addEventListener('click', async () => {
                 adminGameFormSection.style.display = 'none';
-                adminGamesList.style.display = 'block';
-                adminTicketsList.style.display = 'none';
+                if (adminGamesList) adminGamesList.style.display = 'block';
+                if (adminTicketsList) adminTicketsList.style.display = 'none';
                 await loadAdminGames();
             });
             
-            adminViewTicketsBtn.addEventListener('click', async () => {
+            if (adminViewTicketsBtn) adminViewTicketsBtn.addEventListener('click', async () => {
                 adminGameFormSection.style.display = 'none';
-                adminGamesList.style.display = 'none';
-                adminTicketsList.style.display = 'block';
+                if (adminGamesList) adminGamesList.style.display = 'none';
+                if (adminTicketsList) adminTicketsList.style.display = 'block';
                 await loadSupportTickets();
             });
             
-            adminSaveGameBtn.addEventListener('click', saveAdminGame);
-            adminCancelGameBtn.addEventListener('click', () => {
+            if (adminSaveGameBtn) adminSaveGameBtn.addEventListener('click', saveAdminGame);
+            if (adminCancelGameBtn) adminCancelGameBtn.addEventListener('click', () => {
                 adminGameFormSection.style.display = 'none';
-                adminGamesList.style.display = 'block';
+                if (adminGamesList) adminGamesList.style.display = 'block';
             });
             
             // Превью изображений
-            gameImageUrlInput.addEventListener('input', updateImagePreview);
-            adminGameImageUrlInput.addEventListener('input', updateAdminImagePreview);
+            if (gameImageUrlInput) gameImageUrlInput.addEventListener('input', updateImagePreview);
+            if (adminGameImageUrlInput) adminGameImageUrlInput.addEventListener('input', updateAdminImagePreview);
         }
         
         // =================== МОБИЛЬНОЕ МЕНЮ ===================
         function initMobileMenu() {
+            if (!menuToggle || !mobileMenu || !closeMenu) return;
+            
             menuToggle.addEventListener('click', () => {
                 mobileMenu.classList.add('active');
                 menuOverlay.classList.add('active');
@@ -1887,34 +1996,33 @@
                 closeMobileMenu();
             });
             
-            menuOverlay.addEventListener('click', () => {
+            if (menuOverlay) menuOverlay.addEventListener('click', () => {
                 closeMobileMenu();
             });
             
             // Закрытие меню при клике на ссылку
             [mobileNavGames, mobileNavAbout, mobileNavDonate].forEach(link => {
-                link.addEventListener('click', () => {
+                if (link) link.addEventListener('click', () => {
                     closeMobileMenu();
                 });
             });
             
             // Открытие модалки входа из мобильного меню
-            mobileOpenAuthModal.addEventListener('click', () => {
+            if (mobileOpenAuthModal) mobileOpenAuthModal.addEventListener('click', () => {
                 closeMobileMenu();
                 setTimeout(() => {
-                    openAuthModalBtn.click();
+                    if (openAuthModalBtn) openAuthModalBtn.click();
                 }, 300);
             });
             
             // Выход из мобильного меню
-            mobileLogoutBtn.addEventListener('click', async () => {
-                await supabase.auth.signOut();
+            if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', async () => {
+                await handleLogout();
                 closeMobileMenu();
-                showNotification('Вы вышли из системы', 'info');
             });
             
             // Админ-панель из мобильного меню
-            mobileAdminNavLink.addEventListener('click', () => {
+            if (mobileAdminNavLink) mobileAdminNavLink.addEventListener('click', () => {
                 closeMobileMenu();
                 setTimeout(() => {
                     if (isAdmin) showAdminPanel();
@@ -1923,18 +2031,26 @@
         }
         
         function closeMobileMenu() {
-            mobileMenu.classList.remove('active');
-            menuOverlay.classList.remove('active');
+            if (mobileMenu) mobileMenu.classList.remove('active');
+            if (menuOverlay) menuOverlay.classList.remove('active');
             document.body.style.overflow = '';
         }
         
         // =================== ФУНКЦИИ АУТЕНТИФИКАЦИИ ===================
         async function checkAuth() {
             try {
+                if (!supabase || !supabase.auth) {
+                    console.error('Supabase не инициализирован');
+                    return;
+                }
+                
                 const { data: { session }, error } = await supabase.auth.getSession();
                 
                 if (error) {
                     console.error('Ошибка получения сессии:', error);
+                    if (!error.message.includes('Failed to fetch')) {
+                        showNotification('Ошибка проверки авторизации', 'error');
+                    }
                     return;
                 }
                 
@@ -1942,94 +2058,50 @@
                     currentUser = session.user;
                     const userEmail = currentUser.email;
                     
-                    // Проверяем, админ ли это (по email в коде)
                     isAdmin = (userEmail === 'admin@mail.ru');
                     
-                    // Обновляем интерфейс
-                    openAuthModalBtn.style.display = 'none';
-                    authButtonLi.style.display = 'none';
-                    userInfo.style.display = 'flex';
-                    usernameDisplay.textContent = userEmail.split('@')[0] || 'Пользователь';
-                    userAvatar.textContent = userEmail[0].toUpperCase();
+                    if (openAuthModalBtn) openAuthModalBtn.style.display = 'none';
+                    if (authButtonLi) authButtonLi.style.display = 'none';
+                    if (userInfo) userInfo.style.display = 'flex';
+                    if (usernameDisplay) usernameDisplay.textContent = userEmail.split('@')[0] || 'Пользователь';
+                    if (userAvatar) userAvatar.textContent = userEmail[0].toUpperCase();
                     
-                    // Обновляем мобильное меню
-                    mobileUserInfo.classList.add('active');
-                    mobileUserAvatar.textContent = userEmail[0].toUpperCase();
-                    mobileUsernameDisplay.textContent = userEmail.split('@')[0] || 'Пользователь';
-                    mobileUserEmail.textContent = userEmail;
-                    mobileOpenAuthModal.style.display = 'none';
+                    if (mobileUserInfo) mobileUserInfo.classList.add('active');
+                    if (mobileUserAvatar) mobileUserAvatar.textContent = userEmail[0].toUpperCase();
+                    if (mobileUsernameDisplay) mobileUsernameDisplay.textContent = userEmail.split('@')[0] || 'Пользователь';
+                    if (mobileUserEmail) mobileUserEmail.textContent = userEmail;
+                    if (mobileOpenAuthModal) mobileOpenAuthModal.style.display = 'none';
                     
                     if (isAdmin) {
-                        adminNavItem.style.display = 'block';
-                        mobileAdminNavLink.style.display = 'block';
+                        if (adminNavItem) adminNavItem.style.display = 'block';
+                        if (mobileAdminNavLink) mobileAdminNavLink.style.display = 'block';
                     } else {
-                        adminNavItem.style.display = 'none';
-                        mobileAdminNavLink.style.display = 'none';
+                        if (adminNavItem) adminNavItem.style.display = 'none';
+                        if (mobileAdminNavLink) mobileAdminNavLink.style.display = 'none';
                     }
                     
-                    // Показываем кнопку добавления игры для всех авторизованных
-                    showAddGameFormBtn.style.display = 'block';
-                    
-                    // Проверяем и создаем таблицы если нужно
-                    await checkAndCreateTables();
+                    if (showAddGameFormBtn) showAddGameFormBtn.style.display = 'block';
+                    if (navFavorites) navFavorites.style.display = 'block';
                     
                 } else {
-                    // Не авторизован
                     currentUser = null;
                     isAdmin = false;
-                    openAuthModalBtn.style.display = 'block';
-                    authButtonLi.style.display = 'block';
-                    userInfo.style.display = 'none';
-                    adminNavItem.style.display = 'none';
-                    showAddGameFormBtn.style.display = 'none';
+                    if (openAuthModalBtn) openAuthModalBtn.style.display = 'block';
+                    if (authButtonLi) authButtonLi.style.display = 'block';
+                    if (userInfo) userInfo.style.display = 'none';
+                    if (adminNavItem) adminNavItem.style.display = 'none';
+                    if (showAddGameFormBtn) showAddGameFormBtn.style.display = 'none';
+                    if (navFavorites) navFavorites.style.display = 'none';
                     
-                    // Обновляем мобильное меню
-                    mobileUserInfo.classList.remove('active');
-                    mobileOpenAuthModal.style.display = 'flex';
-                    mobileAdminNavLink.style.display = 'none';
+                    if (mobileUserInfo) mobileUserInfo.classList.remove('active');
+                    if (mobileOpenAuthModal) mobileOpenAuthModal.style.display = 'flex';
+                    if (mobileAdminNavLink) mobileAdminNavLink.style.display = 'none';
                 }
             } catch (error) {
                 console.error('Ошибка в checkAuth:', error);
-            }
-        }
-        
-        async function checkAndCreateTables() {
-            try {
-                // Проверяем таблицу games
-                const { data: games, error: gamesError } = await supabase
-                    .from('games')
-                    .select('id')
-                    .limit(1);
-                
-                if (gamesError) {
-                    console.log('Таблица games не существует, будет создана автоматически при добавлении первой игры');
+                if (!error.message.includes('Failed to fetch')) {
+                    showNotification('Ошибка авторизации', 'error');
                 }
-                
-                // Проверяем таблицу users (для админов)
-                if (isAdmin) {
-                    const { data: users, error: usersError } = await supabase
-                        .from('users')
-                        .select('id')
-                        .limit(1);
-                    
-                    if (usersError) {
-                        console.log('Таблица users не существует');
-                    }
-                }
-                
-                // Проверяем таблицу support_tickets (для админов)
-                if (isAdmin) {
-                    const { data: tickets, error: ticketsError } = await supabase
-                        .from('support_tickets')
-                        .select('id')
-                        .limit(1);
-                    
-                    if (ticketsError) {
-                        console.log('Таблица support_tickets не существует');
-                    }
-                }
-            } catch (error) {
-                console.error('Ошибка проверки таблиц:', error);
             }
         }
         
@@ -2043,6 +2115,9 @@
                 return;
             }
             
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Вход...';
+            
             try {
                 const { data, error } = await supabase.auth.signInWithPassword({
                     email,
@@ -2050,22 +2125,24 @@
                 });
                 
                 if (error) {
-                    document.getElementById('loginError').textContent = error.message;
+                    console.error('Ошибка входа:', error);
+                    document.getElementById('loginError').textContent = error.message || 'Ошибка входа';
                     document.getElementById('loginError').style.display = 'block';
                 } else {
                     showNotification('Вход выполнен успешно!', 'success');
                     authModal.style.display = 'none';
                     
-                    // Обновляем интерфейс
                     await checkAuth();
-                    
-                    // Перезагружаем игры
                     await loadGames();
+                    await loadFavorites();
                 }
             } catch (error) {
-                console.error('Ошибка входа:', error);
+                console.error('Непредвиденная ошибка входа:', error);
                 document.getElementById('loginError').textContent = 'Ошибка входа. Попробуйте позже.';
                 document.getElementById('loginError').style.display = 'block';
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = 'Войти';
             }
         }
         
@@ -2093,8 +2170,17 @@
                 return;
             }
             
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                document.getElementById('registerError').textContent = 'Введите корректный email адрес';
+                document.getElementById('registerError').style.display = 'block';
+                return;
+            }
+            
+            registerBtn.disabled = true;
+            registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Регистрация...';
+            
             try {
-                // Регистрируем пользователя
                 const { data: authData, error: authError } = await supabase.auth.signUp({
                     email,
                     password,
@@ -2107,24 +2193,36 @@
                 });
                 
                 if (authError) {
-                    document.getElementById('registerError').textContent = authError.message;
+                    console.error('Ошибка регистрации:', authError);
+                    let errorMessage = authError.message;
+                    
+                    if (errorMessage.includes('Failed to fetch')) {
+                        errorMessage = 'Ошибка сети. Проверьте подключение к интернету.';
+                    } else if (errorMessage.includes('User already registered')) {
+                        errorMessage = 'Пользователь с таким email уже зарегистрирован';
+                    }
+                    
+                    document.getElementById('registerError').textContent = errorMessage;
                     document.getElementById('registerError').style.display = 'block';
-                    return;
+                    document.getElementById('registerSuccess').style.display = 'none';
+                } else {
+                    document.getElementById('registerSuccess').textContent = 'Регистрация успешна! Вы можете войти в систему.';
+                    document.getElementById('registerSuccess').style.display = 'block';
+                    document.getElementById('registerError').style.display = 'none';
+                    
+                    showNotification('Регистрация завершена! Теперь вы можете войти.', 'success');
+                    
+                    setTimeout(() => {
+                        authModal.style.display = 'none';
+                    }, 2000);
                 }
-                
-                document.getElementById('registerSuccess').textContent = 'Регистрация успешна! Проверьте почту для подтверждения.';
-                document.getElementById('registerSuccess').style.display = 'block';
-                document.getElementById('registerError').style.display = 'none';
-                
-                setTimeout(() => {
-                    authModal.style.display = 'none';
-                    showNotification('Регистрация завершена! Проверьте почту.', 'success');
-                }, 2000);
-                
             } catch (error) {
-                console.error('Ошибка регистрации:', error);
+                console.error('Непредвиденная ошибка регистрации:', error);
                 document.getElementById('registerError').textContent = 'Ошибка регистрации. Попробуйте позже.';
                 document.getElementById('registerError').style.display = 'block';
+            } finally {
+                registerBtn.disabled = false;
+                registerBtn.innerHTML = 'Зарегистрироваться';
             }
         }
         
@@ -2138,14 +2236,10 @@
                     currentUser = null;
                     isAdmin = false;
                     
-                    // Обновляем интерфейс
                     await checkAuth();
-                    
-                    // Перезагружаем игры
                     await loadGames();
                     
-                    // Если в админ панели - возвращаем на главную
-                    if (adminPanel.style.display === 'block') {
+                    if (adminPanel && adminPanel.style.display === 'block') {
                         showMainContent();
                     }
                 }
@@ -2158,6 +2252,7 @@
         // =================== ФУНКЦИИ ДЛЯ ИГР ===================
         async function loadGames() {
             try {
+                // Проверяем, есть ли игры в базе
                 const { data: games, error } = await supabase
                     .from('games')
                     .select('*')
@@ -2165,21 +2260,16 @@
                 
                 if (error) {
                     console.error('Ошибка загрузки игр:', error);
-                    // Если таблицы нет, показываем пустой каталог
-                    if (error.code === 'PGRST116') {
-                        globalGamesGrid.innerHTML = '';
-                        const emptyDiv = document.createElement('div');
-                        emptyDiv.className = 'empty-catalog';
-                        emptyDiv.innerHTML = `
-                            <i class="fas fa-gamepad"></i>
-                            <h3 style="color: var(--text-tertiary); margin-bottom: 10px;">Каталог пуст</h3>
-                            <p>Будьте первым, кто добавит игру!</p>
-                        `;
-                        globalGamesGrid.appendChild(emptyDiv);
+                    
+                    // Если таблица не существует, создаем тестовые игры
+                    if (error.code === 'PGRST116' || error.message.includes('relation')) {
+                        console.log('Таблица games не существует, создаем тестовые игры');
+                        await createSampleGames();
+                        return loadGames(); // Пробуем снова после создания
                     } else {
-                        showNotification('Ошибка загрузки игр', 'error');
+                        showNotification('Ошибка загрузки игр: ' + error.message, 'error');
+                        return;
                     }
-                    return;
                 }
                 
                 globalGamesGrid.innerHTML = '';
@@ -2202,6 +2292,51 @@
             } catch (error) {
                 console.error('Ошибка в loadGames:', error);
                 showNotification('Ошибка загрузки игр', 'error');
+            }
+        }
+        
+        async function createSampleGames() {
+            try {
+                const sampleGames = [
+                    {
+                        title: 'The Witcher 3: Wild Hunt',
+                        year: 2015,
+                        description: 'Эпическая ролевая игра в мире фэнтези. Геральт из Ривии ищет свою пропавшую приемную дочь.',
+                        image_url: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60',
+                        is_global: true,
+                        added_by: 'system'
+                    },
+                    {
+                        title: 'Cyberpunk 2077',
+                        year: 2020,
+                        description: 'Приключенческая ролевая игра в киберпанк-мире Ночного Города.',
+                        image_url: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60',
+                        is_global: true,
+                        added_by: 'system'
+                    },
+                    {
+                        title: 'Red Dead Redemption 2',
+                        year: 2018,
+                        description: 'Приключенческий боевик о банде Ван дер Линде в Америке на рубеже веков.',
+                        image_url: 'https://images.unsplash.com/photo-1551103782-8ab07afd45c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60',
+                        is_global: true,
+                        added_by: 'system'
+                    }
+                ];
+                
+                for (const game of sampleGames) {
+                    const { error } = await supabase
+                        .from('games')
+                        .insert(game);
+                    
+                    if (error) {
+                        console.error('Ошибка создания тестовой игры:', error);
+                    }
+                }
+                
+                console.log('Тестовые игры созданы');
+            } catch (error) {
+                console.error('Ошибка создания тестовых игр:', error);
             }
         }
         
@@ -2233,6 +2368,8 @@
                                     <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--border-color);">ID</th>
                                     <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--border-color);">Название</th>
                                     <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--border-color);">Год</th>
+                                    <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--border-color);">Логин</th>
+                                    <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--border-color);">Пароль</th>
                                     <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--border-color);">Действия</th>
                                 </tr>
                             </thead>
@@ -2245,6 +2382,8 @@
                                 <td style="padding: 12px;">${game.id}</td>
                                 <td style="padding: 12px;">${game.title}</td>
                                 <td style="padding: 12px;">${game.year}</td>
+                                <td style="padding: 12px;">${game.login || ''}</td>
+                                <td style="padding: 12px;">${game.password ? '••••••••' : ''}</td>
                                 <td style="padding: 12px;">
                                     <button onclick="editAdminGame('${game.id}')" style="background-color: var(--primary-color); color: white; border: none; padding: 5px 10px; border-radius: 4px; margin-right: 5px; cursor: pointer;">Редакт.</button>
                                     <button onclick="deleteAdminGame('${game.id}')" style="background-color: var(--error-color); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Удалить</button>
@@ -2275,8 +2414,17 @@
             const imageUrl = game.image_url || 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60';
             
             let actionsHTML = '';
+            let credentialsHTML = '';
             
-            // Показываем кнопки редактирования/удаления только админу
+            if (game.login || game.password) {
+                credentialsHTML = `
+                    <div class="credentials-container">
+                        ${game.login ? `<div class="credentials-field"><span class="credentials-label">Логин:</span> <span class="credentials-value">${game.login}</span></div>` : ''}
+                        ${game.password ? `<div class="credentials-field"><span class="credentials-label">Пароль:</span> <span class="credentials-value">${game.password}</span></div>` : ''}
+                    </div>
+                `;
+            }
+            
             if (isAdmin) {
                 actionsHTML = `
                     <div class="game-actions">
@@ -2286,12 +2434,26 @@
                 `;
             }
             
+            let favoriteButtonHTML = '';
+            if (currentUser) {
+                const isFavorite = userFavorites.some(fav => fav.game_id === game.id);
+                favoriteButtonHTML = `
+                    <button class="favorite-btn ${isFavorite ? 'favorited' : ''}" onclick="toggleFavorite('${game.id}')" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.5); border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-star"></i>
+                    </button>
+                `;
+            }
+            
             gameCard.innerHTML = `
-                <img src="${imageUrl}" alt="${game.title}" class="game-image" onerror="this.src='https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60'">
+                <div style="position: relative;">
+                    <img src="${imageUrl}" alt="${game.title}" class="game-image" onerror="this.src='https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60'">
+                    ${favoriteButtonHTML}
+                </div>
                 <div class="game-info">
                     <h3 class="game-title">${game.title}</h3>
                     <div class="game-year">${game.year}</div>
                     <p class="game-description">${game.description}</p>
+                    ${credentialsHTML}
                     ${actionsHTML}
                 </div>
             `;
@@ -2299,7 +2461,145 @@
             return gameCard;
         }
         
-        // Глобальные функции для работы с играми
+        // =================== ФУНКЦИИ ИЗБРАННОГО ===================
+        async function loadFavorites() {
+            if (!currentUser) return;
+            
+            try {
+                // Сначала проверяем существует ли таблица
+                const { data: favorites, error } = await supabase
+                    .from('favorites')
+                    .select('game_id')
+                    .eq('user_id', currentUser.id);
+                
+                if (error) {
+                    console.error('Ошибка загрузки избранного:', error);
+                    // Если таблица не существует, создаем пустой массив
+                    userFavorites = [];
+                    return;
+                }
+                
+                userFavorites = favorites || [];
+                
+                if (userFavorites.length > 0) {
+                    const gameIds = userFavorites.map(fav => fav.game_id);
+                    const { data: games, error: gamesError } = await supabase
+                        .from('games')
+                        .select('*')
+                        .in('id', gameIds);
+                    
+                    if (gamesError) {
+                        console.error('Ошибка загрузки игр из избранного:', gamesError);
+                        return;
+                    }
+                    
+                    displayFavorites(games);
+                } else {
+                    displayFavorites([]);
+                }
+            } catch (error) {
+                console.error('Ошибка в loadFavorites:', error);
+                userFavorites = [];
+            }
+        }
+        
+        function displayFavorites(games) {
+            favoritesGrid.innerHTML = '';
+            
+            if (!games || games.length === 0) {
+                favoritesGrid.innerHTML = `
+                    <div class="empty-catalog">
+                        <i class="fas fa-star"></i>
+                        <h3 style="color: var(--text-tertiary); margin-bottom: 10px;">Нет избранных игр</h3>
+                        <p>Добавьте игры в избранное, нажав на звездочку</p>
+                    </div>
+                `;
+            } else {
+                games.forEach(game => {
+                    const gameCard = createGameCard(game);
+                    favoritesGrid.appendChild(gameCard);
+                });
+            }
+        }
+        
+        window.toggleFavorite = async function(gameId) {
+            if (!currentUser) {
+                showNotification('Войдите в систему, чтобы добавлять игры в избранное', 'error');
+                return;
+            }
+            
+            try {
+                const isCurrentlyFavorite = userFavorites.some(fav => fav.game_id === gameId);
+                
+                if (isCurrentlyFavorite) {
+                    const { error } = await supabase
+                        .from('favorites')
+                        .delete()
+                        .eq('user_id', currentUser.id)
+                        .eq('game_id', gameId);
+                    
+                    if (error) {
+                        console.error('Ошибка удаления из избранного:', error);
+                        showNotification('Ошибка удаления из избранного', 'error');
+                        return;
+                    }
+                    
+                    userFavorites = userFavorites.filter(fav => fav.game_id !== gameId);
+                    showNotification('Удалено из избранного', 'success');
+                } else {
+                    const { error } = await supabase
+                        .from('favorites')
+                        .insert({
+                            user_id: currentUser.id,
+                            game_id: gameId
+                        });
+                    
+                    if (error) {
+                        console.error('Ошибка добавления в избранное:', error);
+                        showNotification('Ошибка добавления в избранное', 'error');
+                        return;
+                    }
+                    
+                    userFavorites.push({ game_id: gameId, user_id: currentUser.id });
+                    showNotification('Добавлено в избранное', 'success');
+                }
+                
+                const favoriteButtons = document.querySelectorAll(`.favorite-btn[onclick="toggleFavorite('${gameId}')"]`);
+                favoriteButtons.forEach(btn => {
+                    if (isCurrentlyFavorite) {
+                        btn.classList.remove('favorited');
+                    } else {
+                        btn.classList.add('favorited');
+                    }
+                });
+                
+                if (favoritesSection.style.display === 'block') {
+                    await loadFavorites();
+                }
+                
+            } catch (error) {
+                console.error('Ошибка при работе с избранным:', error);
+                showNotification('Ошибка при работе с избранным', 'error');
+            }
+        };
+        
+        function showGamesSection() {
+            document.getElementById('games').style.display = 'block';
+            favoritesSection.style.display = 'none';
+            document.getElementById('games').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function showFavoritesSection() {
+            if (!currentUser) {
+                showNotification('Войдите в систему, чтобы просмотреть избранное', 'error');
+                return;
+            }
+            
+            document.getElementById('games').style.display = 'none';
+            favoritesSection.style.display = 'block';
+            favoritesSection.scrollIntoView({ behavior: 'smooth' });
+        }
+        
         window.editGame = async function(gameId) {
             try {
                 const { data: game, error } = await supabase
@@ -2313,20 +2613,19 @@
                     return;
                 }
                 
-                // Заполняем форму
                 gameTitleInput.value = game.title;
                 gameYearInput.value = game.year;
                 gameDescriptionInput.value = game.description;
+                gameLoginInput.value = game.login || '';
+                gamePasswordInput.value = game.password || '';
                 gameImageUrlInput.value = game.image_url || '';
                 editingGameIdInput.value = gameId;
                 editingGameId = gameId;
                 
-                // Показываем форму
                 gameFormSection.style.display = 'block';
                 gameFormTitle.textContent = 'Редактировать игру';
                 showAddGameFormBtn.style.display = 'none';
                 
-                // Обновляем превью
                 updateImagePreview();
                 
             } catch (error) {
@@ -2350,8 +2649,11 @@
                 } else {
                     showNotification('Игра удалена', 'success');
                     await loadGames();
-                    if (adminPanel.style.display === 'block') {
+                    if (adminPanel && adminPanel.style.display === 'block') {
                         await loadAdminGames();
+                    }
+                    if (currentUser) {
+                        await loadFavorites();
                     }
                 }
             } catch (error) {
@@ -2373,21 +2675,20 @@
                     return;
                 }
                 
-                // Заполняем админ форму
                 adminGameTitleInput.value = game.title;
                 adminGameYearInput.value = game.year;
                 adminGameDescriptionInput.value = game.description;
+                adminGameLoginInput.value = game.login || '';
+                adminGamePasswordInput.value = game.password || '';
                 adminGameImageUrlInput.value = game.image_url || '';
                 adminEditingGameIdInput.value = gameId;
                 adminEditingGameId = gameId;
                 
-                // Показываем форму
                 adminGameFormSection.style.display = 'block';
                 adminGameFormTitle.textContent = 'Редактировать игру';
                 adminGamesList.style.display = 'none';
                 adminTicketsList.style.display = 'none';
                 
-                // Обновляем превью
                 updateAdminImagePreview();
                 
             } catch (error) {
@@ -2412,6 +2713,9 @@
                     showNotification('Игра удалена', 'success');
                     await loadGames();
                     await loadAdminGames();
+                    if (currentUser) {
+                        await loadFavorites();
+                    }
                 }
             } catch (error) {
                 console.error('Ошибка при удалении игры:', error);
@@ -2423,6 +2727,8 @@
             const title = gameTitleInput.value.trim();
             const year = gameYearInput.value.trim();
             const description = gameDescriptionInput.value.trim();
+            const login = gameLoginInput.value.trim();
+            const password = gamePasswordInput.value.trim();
             const imageUrl = gameImageUrlInput.value.trim();
             
             if (!title || !year || !description) {
@@ -2440,24 +2746,25 @@
                     title,
                     year: parseInt(year),
                     description,
-                    is_global: true,
-                    added_by: currentUser.id
+                    is_global: true
                 };
                 
-                if (imageUrl) {
-                    gameData.image_url = imageUrl;
+                if (currentUser) {
+                    gameData.added_by = currentUser.id;
                 }
+                
+                if (login) gameData.login = login;
+                if (password) gameData.password = password;
+                if (imageUrl) gameData.image_url = imageUrl;
                 
                 let result;
                 
                 if (editingGameId) {
-                    // Редактирование существующей игры
                     result = await supabase
                         .from('games')
                         .update(gameData)
                         .eq('id', editingGameId);
                 } else {
-                    // Добавление новой игры
                     result = await supabase
                         .from('games')
                         .insert(gameData);
@@ -2465,18 +2772,16 @@
                 
                 if (result.error) {
                     console.error('Ошибка сохранения игры:', result.error);
-                    showNotification('Ошибка сохранения игры', 'error');
+                    showNotification('Ошибка сохранения игры: ' + result.error.message, 'error');
                     return;
                 }
                 
                 showNotification(editingGameId ? 'Игра обновлена' : 'Игра добавлена', 'success');
                 
-                // Сбрасываем форму и скрываем
                 resetGameForm();
                 gameFormSection.style.display = 'none';
                 if (currentUser) showAddGameFormBtn.style.display = 'block';
                 
-                // Перезагружаем игры
                 await loadGames();
                 
             } catch (error) {
@@ -2489,6 +2794,8 @@
             const title = adminGameTitleInput.value.trim();
             const year = adminGameYearInput.value.trim();
             const description = adminGameDescriptionInput.value.trim();
+            const login = adminGameLoginInput.value.trim();
+            const password = adminGamePasswordInput.value.trim();
             const imageUrl = adminGameImageUrlInput.value.trim();
             
             if (!title || !year || !description) {
@@ -2506,24 +2813,25 @@
                     title,
                     year: parseInt(year),
                     description,
-                    is_global: true,
-                    added_by: currentUser.id
+                    is_global: true
                 };
                 
-                if (imageUrl) {
-                    gameData.image_url = imageUrl;
+                if (currentUser) {
+                    gameData.added_by = currentUser.id;
                 }
+                
+                if (login) gameData.login = login;
+                if (password) gameData.password = password;
+                if (imageUrl) gameData.image_url = imageUrl;
                 
                 let result;
                 
                 if (adminEditingGameId) {
-                    // Редактирование существующей игры
                     result = await supabase
                         .from('games')
                         .update(gameData)
                         .eq('id', adminEditingGameId);
                 } else {
-                    // Добавление новой игры
                     result = await supabase
                         .from('games')
                         .insert(gameData);
@@ -2531,18 +2839,16 @@
                 
                 if (result.error) {
                     console.error('Ошибка сохранения игры:', result.error);
-                    showNotification('Ошибка сохранения игры', 'error');
+                    showNotification('Ошибка сохранения игры: ' + result.error.message, 'error');
                     return;
                 }
                 
                 showNotification(adminEditingGameId ? 'Игра обновлена' : 'Игра добавлена', 'success');
                 
-                // Сбрасываем форму и скрываем
                 resetAdminGameForm();
                 adminGameFormSection.style.display = 'none';
                 adminGamesList.style.display = 'block';
                 
-                // Перезагружаем игры
                 await loadGames();
                 await loadAdminGames();
                 
@@ -2564,6 +2870,14 @@
                 
                 if (error) {
                     console.error('Ошибка загрузки обращений:', error);
+                    
+                    // Если таблица не существует, создаем пустой массив
+                    if (error.code === 'PGRST116' || error.message.includes('relation')) {
+                        console.log('Таблица support_tickets не существует');
+                        ticketsContainer.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-tertiary);">Обращений нет. Таблица еще не создана.</div>';
+                        return;
+                    }
+                    
                     ticketsContainer.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-tertiary);">Ошибка загрузки обращений</div>';
                     return;
                 }
@@ -2631,7 +2945,7 @@
                     .eq('id', ticketId);
                 
                 if (error) {
-                    showNotification('Ошибка отправки ответа', 'error');
+                    showNotification('Ошибка отправки ответа: ' + error.message, 'error');
                 } else {
                     showNotification('Ответ отправлен', 'success');
                     await loadSupportTickets();
@@ -2653,7 +2967,7 @@
                     .eq('id', ticketId);
                 
                 if (error) {
-                    showNotification('Ошибка закрытия обращения', 'error');
+                    showNotification('Ошибка закрытия обращения: ' + error.message, 'error');
                 } else {
                     showNotification('Обращение закрыто', 'success');
                     await loadSupportTickets();
@@ -2666,6 +2980,8 @@
         
         // =================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ===================
         function showNotification(message, type = 'info') {
+            if (!notification) return;
+            
             notification.textContent = message;
             notification.style.backgroundColor = type === 'success' ? 'var(--success-color)' :
                                               type === 'error' ? 'var(--error-color)' :
@@ -2675,6 +2991,10 @@
             setTimeout(() => {
                 notification.style.display = 'none';
             }, 5000);
+            
+            notification.addEventListener('click', () => {
+                notification.style.display = 'none';
+            });
         }
         
         function toggleTheme() {
@@ -2696,6 +3016,8 @@
                 return;
             }
             
+            if (!supportChat) return;
+            
             supportChat.style.display = supportChat.style.display === 'flex' ? 'none' : 'flex';
             if (supportChat.style.display === 'flex') {
                 messageInput.focus();
@@ -2706,19 +3028,15 @@
             const message = messageInput.value.trim();
             if (!message) return;
             
-            // Просто добавляем сообщение в чат
             const userMessage = document.createElement('div');
             userMessage.className = 'message user-message';
             userMessage.textContent = message;
             chatBody.appendChild(userMessage);
             
-            // Очищаем поле ввода
             messageInput.value = '';
             
-            // Прокручиваем вниз
             chatBody.scrollTop = chatBody.scrollHeight;
             
-            // Показываем автоматический ответ через секунду
             setTimeout(() => {
                 const supportMessage = document.createElement('div');
                 supportMessage.className = 'message support-message';
@@ -2732,25 +3050,29 @@
             gameTitleInput.value = '';
             gameYearInput.value = '';
             gameDescriptionInput.value = '';
+            gameLoginInput.value = '';
+            gamePasswordInput.value = '';
             gameImageUrlInput.value = '';
             editingGameIdInput.value = '';
             editingGameId = null;
-            imagePreview.innerHTML = '<span style="color: var(--text-tertiary);">Предпросмотр появится здесь</span>';
+            if (imagePreview) imagePreview.innerHTML = '<span style="color: var(--text-tertiary);">Предпросмотр появится здесь</span>';
         }
         
         function resetAdminGameForm() {
             adminGameTitleInput.value = '';
             adminGameYearInput.value = '';
             adminGameDescriptionInput.value = '';
+            adminGameLoginInput.value = '';
+            adminGamePasswordInput.value = '';
             adminGameImageUrlInput.value = '';
             adminEditingGameIdInput.value = '';
             adminEditingGameId = null;
-            adminImagePreview.innerHTML = '<span style="color: var(--text-tertiary);">Предпросмотр появится здесь</span>';
+            if (adminImagePreview) adminImagePreview.innerHTML = '<span style="color: var(--text-tertiary);">Предпросмотр появится здесь</span>';
         }
         
         function updateImagePreview() {
             const url = gameImageUrlInput.value.trim();
-            if (!url) {
+            if (!url || !imagePreview) {
                 imagePreview.innerHTML = '<span style="color: var(--text-tertiary);">Предпросмотр появится здесь</span>';
                 return;
             }
@@ -2760,7 +3082,7 @@
         
         function updateAdminImagePreview() {
             const url = adminGameImageUrlInput.value.trim();
-            if (!url) {
+            if (!url || !adminImagePreview) {
                 adminImagePreview.innerHTML = '<span style="color: var(--text-tertiary);">Предпросмотр появится здесь</span>';
                 return;
             }
@@ -2771,19 +3093,18 @@
         function showAdminPanel() {
             if (!isAdmin) return;
             
-            mainContent.style.display = 'none';
-            adminPanel.style.display = 'block';
-            adminGamesList.style.display = 'block';
-            adminGameFormSection.style.display = 'none';
-            adminTicketsList.style.display = 'none';
+            if (mainContent) mainContent.style.display = 'none';
+            if (adminPanel) adminPanel.style.display = 'block';
+            if (adminGamesList) adminGamesList.style.display = 'block';
+            if (adminGameFormSection) adminGameFormSection.style.display = 'none';
+            if (adminTicketsList) adminTicketsList.style.display = 'none';
             
-            // Загружаем игры для админа
             loadAdminGames();
         }
         
         function showMainContent() {
-            mainContent.style.display = 'block';
-            adminPanel.style.display = 'none';
+            if (mainContent) mainContent.style.display = 'block';
+            if (adminPanel) adminPanel.style.display = 'none';
         }
     </script>
 </body>
